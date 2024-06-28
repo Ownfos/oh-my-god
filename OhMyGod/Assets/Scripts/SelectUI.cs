@@ -3,86 +3,41 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 
+
 public class GodSelection : MonoBehaviour
 {
     public Button godGood;
     public Button godEvil;
     public Button godStrange;
-    public Button confirmButton;
+    public Button godGoodSelect;
+    public Button godEvilSelect;
+    public Button godStrangeSelect;
 
-    public GameObject godGoodText; 
-    public GameObject godEvilText; 
-    public GameObject godStrangeText; 
+    public GameObject godGoodText; // Text UI 요소
+    public GameObject godEvilText; // Text UI 요소
+    public GameObject godStrangeText; // Text UI 요소
 
     void Start()
     {
-        godGood.onClick.AddListener(() => SelectGod("Good"));
-        godEvil.onClick.AddListener(() => SelectGod("Evil"));
-        godStrange.onClick.AddListener(() => SelectGod("Strange"));
-        confirmButton.onClick.AddListener(ConfirmSelection);
+        // 신 버튼 클릭 시 텍스트 활성화/비활성화
+        godGood.onClick.AddListener(() => ToggleText(godGoodText));
+        godEvil.onClick.AddListener(() => ToggleText(godEvilText));
+        godStrange.onClick.AddListener(() => ToggleText(godStrangeText));
 
-        // EventTrigger 설정
-        AddEventTrigger(godGood.gameObject, OnGodGoodEnter, EventTriggerType.PointerEnter);
-        AddEventTrigger(godGood.gameObject, OnGodGoodExit, EventTriggerType.PointerExit);
-        AddEventTrigger(godEvil.gameObject, OnGodEvilEnter, EventTriggerType.PointerEnter);
-        AddEventTrigger(godEvil.gameObject, OnGodEvilExit, EventTriggerType.PointerExit);
-        AddEventTrigger(godStrange.gameObject, OnGodStrangeEnter, EventTriggerType.PointerEnter);
-        AddEventTrigger(godStrange.gameObject, OnGodStrangeExit, EventTriggerType.PointerExit);
+        // 선택 버튼 클릭 시 신 선택 및 씬 전환
+        godGoodSelect.onClick.AddListener(() => SelectGod("Good"));
+        godEvilSelect.onClick.AddListener(() => SelectGod("Evil"));
+        godStrangeSelect.onClick.AddListener(() => SelectGod("Strange"));
+    }
+
+    void ToggleText(GameObject textObject)
+    {
+        textObject.SetActive(!textObject.activeSelf); // 활성화/비활성화 토글
     }
 
     void SelectGod(string godName)
     {
         SessionData.Instance.SelectedGod = godName;
-    }
-
-    void ConfirmSelection()
-    {
-        SceneManager.LoadScene("GameScene");
-    }
-
-    void AddEventTrigger(GameObject obj, UnityEngine.Events.UnityAction<BaseEventData> action, EventTriggerType triggerType)
-    {
-        EventTrigger trigger = obj.GetComponent<EventTrigger>();
-        if (trigger == null)
-        {
-            trigger = obj.AddComponent<EventTrigger>();
-        }
-
-        EventTrigger.Entry entry = new EventTrigger.Entry { eventID = triggerType };
-        entry.callback.AddListener(action);
-        trigger.triggers.Add(entry);
-    }
-
-    // GodGood 이벤트 핸들러
-    void OnGodGoodEnter(BaseEventData data)
-    {
-        godGoodText.SetActive(true);
-    }
-
-    void OnGodGoodExit(BaseEventData data)
-    {
-        godGoodText.SetActive(false);
-    }
-
-    // GodEvil 이벤트 핸들러
-    void OnGodEvilEnter(BaseEventData data)
-    {
-        godEvilText.SetActive(true);
-    }
-
-    void OnGodEvilExit(BaseEventData data)
-    {
-        godEvilText.SetActive(false);
-    }
-
-    // GodStrange 이벤트 핸들러
-    void OnGodStrangeEnter(BaseEventData data)
-    {
-        godStrangeText.SetActive(true);
-    }
-
-    void OnGodStrangeExit(BaseEventData data)
-    {
-        godStrangeText.SetActive(false);
+        SceneManager.LoadScene("GameScene"); // 게임 씬으로 전환
     }
 }
