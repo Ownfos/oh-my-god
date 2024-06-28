@@ -603,6 +603,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4065496715860110668, guid: 130fd3ae36aac6448b1ed21652b8e0ae, type: 3}
+      propertyPath: dashSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4065496715860110668, guid: 130fd3ae36aac6448b1ed21652b8e0ae, type: 3}
+      propertyPath: moveSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4065496715860110668, guid: 130fd3ae36aac6448b1ed21652b8e0ae, type: 3}
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 519420031}
