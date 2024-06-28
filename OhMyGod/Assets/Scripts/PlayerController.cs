@@ -1,13 +1,15 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Camera mainCamera;
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float dashSpeed = 6f;
+    [SerializeField] private float dashSpeed = 10f;
     [SerializeField] private Ease moveEase = Ease.OutSine; // 처음엔 빠르고 도착할 때 감속
+    [SerializeField] private Slider dashGaugeSlider;
 
     private InputActions inputActions;
     private Rigidbody2D rb;
@@ -78,7 +80,6 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log($"{dashGauge}, {dashState}");
         UpdateDashGauge();
     }
 
@@ -112,6 +113,8 @@ public class PlayerController : MonoBehaviour
                 dashState = DashState.None;
             }
         }
+
+        dashGaugeSlider.value = dashGauge / MAX_DASH_GAUGE;
     }
 
     private void ChangeDestination(InputAction.CallbackContext context)

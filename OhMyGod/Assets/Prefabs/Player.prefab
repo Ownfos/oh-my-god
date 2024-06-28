@@ -100,8 +100,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 0}
-  moveSpeed: 10
+  moveSpeed: 5
+  dashSpeed: 10
   moveEase: 3
+  dashGaugeSlider: {fileID: 0}
 --- !u!50 &2670906108032369855
 Rigidbody2D:
   serializedVersion: 4
