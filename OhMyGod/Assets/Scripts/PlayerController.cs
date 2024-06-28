@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Camera mainCamera;
-    [SerializeField] private float moveSpeed;
+    [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private Ease moveEase = Ease.OutSine; // 처음엔 빠르고 도착할 때 감속
 
     private InputActions inputActions;
