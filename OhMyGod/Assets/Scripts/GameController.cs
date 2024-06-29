@@ -7,7 +7,8 @@ public class GameController : MonoBehaviour
 {
     public Text countdownText; // 카운트다운 텍스트
     public FadeController fadeController;
-    public float numberScale = 1.5f; // 숫자의 최종 크기
+    public float numberScaleStart = 0.5f; // 애니메이션 시작 크기
+    public float numberScaleEnd = 1.5f; // 애니메이션 끝 크기
     public PlayerMovement playerMovement;
     public NPCMovement[] npcMovements; // 모든 NPC의 움직임을 제어하기 위한 배열
 
@@ -69,15 +70,15 @@ public class GameController : MonoBehaviour
         for (int i = 3; i > 0; i--)
         {
             countdownText.text = i.ToString();
-            countdownText.transform.localScale = Vector3.zero; // 시작 크기 설정
-            countdownText.transform.DOScale(numberScale, 1f).SetEase(Ease.OutBounce); // DOScale 애니메이션 설정
+            countdownText.transform.localScale = new Vector3(numberScaleStart, numberScaleStart, numberScaleStart); // 시작 크기 설정
+            countdownText.transform.DOScale(numberScaleEnd, 1f).SetEase(Ease.OutBounce); // DOScale 애니메이션 설정
             Debug.Log("Countdown: " + i); // 디버그 로그 추가
             yield return new WaitForSeconds(1);
         }
 
         countdownText.text = "Start!";
-        countdownText.transform.localScale = Vector3.zero; // 시작 크기 설정
-        countdownText.transform.DOScale(numberScale, 1f).SetEase(Ease.OutBounce); // DOScale 애니메이션 설정
+        countdownText.transform.localScale = new Vector3(numberScaleStart, numberScaleStart, numberScaleStart); // 시작 크기 설정
+        countdownText.transform.DOScale(numberScaleEnd, 1f).SetEase(Ease.OutBounce); // DOScale 애니메이션 설정
         yield return new WaitForSeconds(1);
 
         countdownText.gameObject.SetActive(false); // 카운트다운 텍스트 비활성화
