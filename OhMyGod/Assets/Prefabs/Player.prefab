@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1930376903532689183}
   - component: {fileID: 7346704012105226235}
   - component: {fileID: 4065496715860110668}
+  - component: {fileID: 1744912720724200697}
   - component: {fileID: 2670906108032369855}
   - component: {fileID: -4205172652317710811}
   m_Layer: 0
@@ -105,6 +106,19 @@ MonoBehaviour:
   dashSpeed: 10
   moveEase: 3
   dashGaugeSlider: {fileID: 0}
+--- !u!114 &1744912720724200697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4709255236303116571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d911ce07698bcf348b2a1e42233cd980, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  propagationRange: {fileID: 6885266551631969429}
 --- !u!50 &2670906108032369855
 Rigidbody2D:
   serializedVersion: 4
@@ -195,7 +209,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 8.1, y: 8.1, z: 8.1}
+  m_LocalScale: {x: 7, y: 7, z: 7}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1930376903532689183}

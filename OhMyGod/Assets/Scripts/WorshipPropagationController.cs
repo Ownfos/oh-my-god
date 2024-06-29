@@ -6,6 +6,13 @@ using UnityEngine;
 // 플레이어와 AI 모두 사용한다.
 public class WorshipPropagationController : MonoBehaviour
 {
+    // 포교 범위 트리거가 달린 자식 게임 오브젝트.
+    // 신도 수에 따라 반지름이 커진다.
+    [SerializeField] private GameObject propagationRange;
+
+    public SpriteRenderer SpriteRenderer {get; private set;}
+    public List<WorshiperController> ActiveWorshipers {get; private set;}
+
     // 중립 npc 포교에 필요한 노출 시간
     // TODO: 종교 특성에 따라 20% 감소 가능하도록 수정
     private const float REQUIRED_PROPAGATION_TIME = 2f;
@@ -16,7 +23,14 @@ public class WorshipPropagationController : MonoBehaviour
     // 포교 범위에 들어온 모든 중립 npc 무리
     private HashSet<NeutralWorshiperGroup> propagationTargetGroups = new();
 
-    void Update()
+    private void Awake()
+    {
+        ActiveWorshipers = new();
+
+        SpriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    private void Update()
     {
         // 중립 npc 포교 활동
         UpdatePropagationTime();
@@ -65,7 +79,7 @@ public class WorshipPropagationController : MonoBehaviour
                 groupsToDelete.Add(group);
 
                 // TODO: 종교 특성에 따라 성공 확률 달라지도록 수정
-                int numSuccess = group.PerformPropagation(PROPAGATION_SUCCESS_RATE, gameObject);
+                int numSuccess = group.PerformPropagation(PROPAGATION_SUCCESS_RATE, this);
 
                 // 집단 포교에 단 한명도 성공하지 못한 경우 패널티로 신도수-1 부여
                 if (group.NumWorshipers > 1 && numSuccess == 0)
@@ -85,5 +99,18 @@ public class WorshipPropagationController : MonoBehaviour
             // 난 죽음을 택하겠다!!!
             Destroy(group.gameObject);
         }
+    }
+
+    // 중립 npc의 포교에 성공했을 경우 호출되는 함수.
+    // 내 신도 목록을 갱신해서 포교 범위나 카메라 뷰 줌아웃 등에 사용한다.
+    public void AddWorshiper(WorshiperController worshiper)
+    {
+        ActiveWorshipers.Add(worshiper);
+
+        // 신도 수에 비례해 포교범위 조정 (하나 들어갈 때마다 3.5정도 크기 필요)
+        // ex) 9명 정도는 3.5짜리 원 안에 들어감
+        // ex) 25명 정도는 7짜리 원 안에 들어감
+        float desiredRadius = Mathf.Ceil(Mathf.Sqrt(ActiveWorshipers.Count)) * 3.5f;
+        propagationRange.transform.localScale = new Vector3(desiredRadius, desiredRadius, desiredRadius);
     }
 }

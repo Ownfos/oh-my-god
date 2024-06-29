@@ -24,7 +24,7 @@ public class NeutralWorshiperGroup : MonoBehaviour
     //
     // successRate: 포교 성공 확률 (독립 시행)
     // followTarget: 포교에 성공한 경우 따라다닐 오브젝트
-    public int PerformPropagation(float successRate, GameObject followTarget)
+    public int PerformPropagation(float successRate, WorshipPropagationController followTarget)
     {
         int numSuccess = 0;
         foreach (WorshiperController worshiper in worshipers)
@@ -33,14 +33,17 @@ public class NeutralWorshiperGroup : MonoBehaviour
             if (Random.Range(0f, 1f) < successRate)
             {
                 numSuccess++;
-                worshiper.FollowTarget = followTarget;
+
+                // 신도 목록에 등록하고 따라다니기 시작
+                followTarget.AddWorshiper(worshiper);
+                worshiper.FollowTarget = followTarget.gameObject;
 
                 // 그룹으로 묶고 있던 오브젝트 탈출
                 worshiper.gameObject.transform.parent = null;
 
                 // 포교 대상의 종교에 맞게 스프라이트 교체하기
                 // TODO: 스프라이트가 아니라 애니메이터 교체가 필요할 수도 있음
-                worshiper.GetComponent<SpriteRenderer>().sprite = followTarget.GetComponent<SpriteRenderer>().sprite;
+                worshiper.GetComponent<SpriteRenderer>().sprite = followTarget.SpriteRenderer.sprite;
             }
         }
 
