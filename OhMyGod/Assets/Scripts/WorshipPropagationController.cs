@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 // 트리거 범위 안에 들어온 중립 npc를
@@ -49,15 +50,17 @@ public class WorshipPropagationController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         // 중립 npc 집단(1인 이상)이 포교 범위에 들어왔는지 체크.
-        // 두 번째 if문 조건은 내가 처음 포교를 시도하는 것인지 확인해줌.
-        //
-        // Note:
-        // 만약 먼저 포교를 시도하던 상대방이 있다면
-        // 무조건 PropagationDuration이 0 이상이기 때문에
-        // 이 값이 0이라면 내가 첫 순서라고 확신할 수 있음
+        // 두 번째 if문 조건은 다른 집단의 포교가 진행중이지 않을 때에만 참이 되어서
+        // 남의 포교 활동을 중간에 가로챌 수 없도록 막아줌.
         var group = other.gameObject.GetComponentInParent<NeutralWorshiperGroup>();
-        if (group != null && Mathf.Approximately(group.PropagationDuration, 0f))
+        if (group != null && (group.currentPropagation == this || group.currentPropagation == null))
         {
+            // 이제 내가 포교 중이라고 마킹
+            group.currentPropagation = this;
+
+            // 포교 범위에 들어온 동안 말랑말랑 모션
+            other.transform.DOShakeScale(2f, 0.2f, 3, 30);
+
             propagationTargetGroups.Add(group);
 
             // 만약 이 집단을 처음 만나는 경우라면 집단 내의 유닛 중 만난 수를 0으로 초기화
@@ -70,16 +73,26 @@ public class WorshipPropagationController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        // 중립 npc 집단(1인 이상)의 모든 인원이 포교 범위에서 나갔는지 체크
+        // 중립 npc 집단(1인 이상)의 모든 인원이 포교 범위에서 나갔는지 체크.
+        // 두 번째 조건은 내가 포교중이 아니라면 propagationTargetGroups에도
+        // group이 존재하지 않으므로 없는 엔트리를 제거하는 버그를 막아준다.
         // Note: 한 명은 나갔지만 다른 인원들이 범위 안에 있을 수 있으므로 npc 카운팅을 해줘야 함
         var group = other.gameObject.GetComponentInParent<NeutralWorshiperGroup>();
-        if (group != null)
+        if (group != null && group.currentPropagation == this)
         {
+            // 포교 범위에서 벗어나면 말랑말랑 모션 끝, 정상 scale 복구
+            other.transform.DOKill();
+            other.transform.localScale = Vector3.one;
+            
             groupEncounterCount[group]--;
             if (groupEncounterCount[group] == 0)
             {
                 propagationTargetGroups.Remove(group);
                 group.PropagationDuration = 0f;
+
+                // 이제 나는 포교 멈췄다고 마킹.
+                // 다른 세력은 이 값이 null이어야만 포교를 시작할 수 있다!
+                group.currentPropagation = null;
             }
         }
     }
@@ -100,7 +113,7 @@ public class WorshipPropagationController : MonoBehaviour
                 groupsToDelete.Add(group);
 
                 // TODO: 종교 특성에 따라 성공 확률 달라지도록 수정
-                int numSuccess = group.PerformPropagation(ActiveWorshipers.Count == 0? PROPAGATION_SUCCESS_RATE : 0f, this);
+                int numSuccess = group.PerformPropagation(PROPAGATION_SUCCESS_RATE, this);
 
                 // 포교 성공한 인원 수만큼 스킬 게이지 회복
                 SkillGauge = Math.Clamp(SkillGauge + numSuccess, 0, MAX_SKILL_GUAGE);
@@ -111,7 +124,7 @@ public class WorshipPropagationController : MonoBehaviour
                     WorshiperController worshiper = ActiveWorshipers[ActiveWorshipers.Count - 1];
                     ActiveWorshipers.Remove(worshiper);
 
-                    Destroy(worshiper.gameObject);
+                    worshiper.Die();
                 }
             }
         }
@@ -123,6 +136,14 @@ public class WorshipPropagationController : MonoBehaviour
 
             // 나의 신도가 되지 않은 오브젝트를 포함한 중립 npc 무리의 부모 오브젝트를 없애버림.
             // 난 죽음을 택하겠다!!!
+            foreach (var worshiper in group.gameObject.GetComponentsInChildren<WorshiperController>())
+            {
+                // 부모로부터 detach해서 사망 모션 출력하고 삭제될 수 있도록 만듦
+                worshiper.transform.parent = null;
+                worshiper.Die();
+            }
+
+            // 이제 자식이 없는 빈 부모 오브젝트는 바로 삭제
             Destroy(group.gameObject);
         }
     }

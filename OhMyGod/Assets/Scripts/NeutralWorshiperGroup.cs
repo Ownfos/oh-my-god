@@ -8,6 +8,10 @@ public class NeutralWorshiperGroup : MonoBehaviour
 
     public float PropagationDuration {get; set;} = 0;
 
+    // 현재 포교를 시도중인 단체를 구분하는 식별자.
+    // 다른 세력의 포교를 중간에 낚아챌 수 없도록 막아준다.
+    public WorshipPropagationController currentPropagation = null;
+
     private void Awake()
     {
         // 내 gameobject의 자식으로 설정된 모든 worshiper
