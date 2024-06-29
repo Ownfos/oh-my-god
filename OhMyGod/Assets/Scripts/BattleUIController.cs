@@ -158,7 +158,8 @@ public class BattleUIController : MonoBehaviour
             }
             else
             {
-                for (int i = loseTeam.ActiveWorshipers.Count - 1;  i > loseTeam.ActiveWorshipers.Count / 2; --i)
+                int previousWorshiperCount = loseTeam.ActiveWorshipers.Count;
+                for (int i = previousWorshiperCount - 1;  i > previousWorshiperCount / 2; --i)
                 {
                     winTeam.AddWorshiper(loseTeam.ActiveWorshipers[i]);
                     loseTeam.ActiveWorshipers.RemoveAt(i);

@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
+public enum GodType
+{
+    Good,
+    Evil,
+    Weird,
+}
+
 // 트리거 범위 안에 들어온 중립 npc를
 // 일정 시간이 지나면 자동으로 포교하는 스크립트.
 // 플레이어와 AI 모두 사용한다.
@@ -11,6 +18,7 @@ public class WorshipPropagationController : MonoBehaviour
     // 상대 집단과의 숭배 배틀 UI에 등장할 이미지들
     public Sprite GodSprite;
     public Sprite WorshiperSprite;
+    public GodType SelectedGod;
 
     // 포교 범위 트리거가 달린 자식 게임 오브젝트.
     // 신도 수에 따라 반지름이 커진다.
@@ -142,14 +150,18 @@ public class WorshipPropagationController : MonoBehaviour
             // 얼마나 오랜 시간 포교에 노출되었는가?
             group.PropagationDuration += Time.deltaTime;
 
-            // TODO: 종교 특성에 따라 필요 시간 단축 가능하도록 수정
-            if (group.PropagationDuration > REQUIRED_PROPAGATION_TIME)
+            // 악한 신을 믿는 경우 포교에 필요한 시간이 20% 감소함
+            float finalRequiredTime = SelectedGod == GodType.Evil ? REQUIRED_PROPAGATION_TIME * 0.8f : REQUIRED_PROPAGATION_TIME;
+            if (group.PropagationDuration > finalRequiredTime)
             {
                 // 포교 성공 판정을 굴린 npc들은 더이상 관리하지 않음 (신도가 되거나 소멸하거나)
                 groupsToDelete.Add(group);
 
-                // TODO: 종교 특성에 따라 성공 확률 달라지도록 수정
-                int numSuccess = group.PerformPropagation(PROPAGATION_SUCCESS_RATE, this);
+                // 착한 신을 믿는 경우 포교 성공 확률이 10%p 증가함
+                float finalSuccessRate = SelectedGod == GodType.Good ? PROPAGATION_SUCCESS_RATE + 0.1f : PROPAGATION_SUCCESS_RATE;
+                int numSuccess = group.PerformPropagation(finalSuccessRate, this);
+
+                // TODO: 이상한 신을 믿는 경우 20% 확률로 도플갱어 획득
 
                 // 포교 성공한 인원 수만큼 스킬 게이지 회복
                 SkillGauge = Math.Clamp(SkillGauge + numSuccess, 0, MAX_SKILL_GUAGE);

@@ -94,18 +94,21 @@ public class PlayerController : MonoBehaviour
             spriteRenderer.sprite = weirdGodWorshiper;
             propagationController.WorshiperSprite = weirdGodWorshiper;
             propagationController.GodSprite = weirdGod;
+            propagationController.SelectedGod = GodType.Weird;
         }
         else if (godName == "Good")
         {
             spriteRenderer.sprite = goodGodWorshiper;
             propagationController.WorshiperSprite = goodGodWorshiper;
             propagationController.GodSprite = goodGod;
+            propagationController.SelectedGod = GodType.Good;
         }
         else if (godName == "Evil")
         {
             spriteRenderer.sprite = evilGodWorshiper;
             propagationController.WorshiperSprite = evilGodWorshiper;
             propagationController.GodSprite = evilGod;
+            propagationController.SelectedGod = GodType.Evil;
         }
     }
 
