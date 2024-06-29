@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Cinemachine;
 using DG.Tweening;
 using UnityEngine;
 
@@ -22,7 +23,10 @@ public class WorshipPropagationController : MonoBehaviour
 
     // 포교 범위 트리거가 달린 자식 게임 오브젝트.
     // 신도 수에 따라 반지름이 커진다.
+    // 주인공인 경우 cinemachineCamera 레퍼런스를 추가로 등록해
+    // 신도 수에 비례해서 카메라의 시야를 넓힐 수 있다.
     [SerializeField] private GameObject propagationRange;
+    [SerializeField] private CinemachineVirtualCamera cinemachineCamera;
     [SerializeField] private BattleUIController battleStartUIController;
     public EmojiController EmojiController;
 
@@ -62,6 +66,7 @@ public class WorshipPropagationController : MonoBehaviour
     // 악한 신을 고른 경우 포섭 시간이 빨라지는 대신 10초마다 신도를 잃을 위험이 있음
     private const float EVIL_GOD_DEBUFF_CYCLE = 10f;
     private float evilGodDebuffTimer = EVIL_GOD_DEBUFF_CYCLE;
+    private float targetCameraLensOrthoSize = 8f;
 
     private void Awake()
     {
@@ -75,6 +80,12 @@ public class WorshipPropagationController : MonoBehaviour
     {
         // 중립 npc 포교 활동
         UpdatePropagationTime();
+
+        // 주인공인 경우 신도 수에 비례해서 카메라 시야 확장
+        if (cinemachineCamera != null)
+        {
+            cinemachineCamera.m_Lens.OrthographicSize = Mathf.MoveTowards(cinemachineCamera.m_Lens.OrthographicSize, targetCameraLensOrthoSize, Time.deltaTime);
+        }
 
         // 각종 타이머 시간 기록
         protectionPeriod -= Time.deltaTime;
@@ -292,11 +303,17 @@ public class WorshipPropagationController : MonoBehaviour
 
         worshiper.GetComponentInChildren<EmojiController>().PopupEmoji(EmojiType.Happy);
 
-        // 신도 수에 비례해 포교범위 조정 (하나 들어갈 때마다 3.5정도 크기 필요)
+        // 본인을 포함한 신도 수에 비례해 포교범위 조정 (하나 들어갈 때마다 3.5정도 크기 필요)
         // ex) 9명 정도는 3.5짜리 원 안에 들어감
         // ex) 25명 정도는 7짜리 원 안에 들어감
-        float desiredRadius = Mathf.Ceil(Mathf.Sqrt(ActiveWorshipers.Count)) * 3.5f;
+        float desiredRadius = Mathf.Ceil(Mathf.Sqrt(ActiveWorshipers.Count + 1)) * 2.8f;
         propagationRange.transform.localScale = new Vector3(desiredRadius, desiredRadius, desiredRadius);
+
+        // 플레이어인 경우 시야 범위도 조금씩 넓어지게 만듦
+        if (cinemachineCamera != null)
+        {
+            targetCameraLensOrthoSize = 6f + desiredRadius * 0.35f;
+        }
     }
 
     // 한 번 배틀에서 지면 10초간은 연속으로 공격할 수 없도록 보호함
