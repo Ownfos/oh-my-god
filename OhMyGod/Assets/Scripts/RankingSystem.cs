@@ -41,8 +41,8 @@ public class RankingSystem : MonoBehaviour
     // 새롭게 경쟁자들을 정렬하고 UI를 업데이트함.
     public void RecalculateRank()
     {
-        // 신도 순으로 정렬
-        competitors.Sort((lhs, rhs) => lhs.ActiveWorshipers.Count.CompareTo(rhs.ActiveWorshipers.Count));
+        // 신도가 많은 사람이 앞에 오도록 정렬
+        competitors.Sort((lhs, rhs) => rhs.ActiveWorshipers.Count.CompareTo(lhs.ActiveWorshipers.Count));
 
         // 경쟁자가 4명 이하로 떨어진 경우 순서대로 출력
         if (competitors.Count < 5)
@@ -51,7 +51,7 @@ public class RankingSystem : MonoBehaviour
             {
                 if (i < competitors.Count)
                 {
-                    rankingTexts[i].text = $"{i+1}. {competitors[i].name}";
+                    rankingTexts[i].text = $"{i+1}. {competitors[i].name}:{competitors[i].ActiveWorshipers.Count}";
                 }
                 else
                 {
