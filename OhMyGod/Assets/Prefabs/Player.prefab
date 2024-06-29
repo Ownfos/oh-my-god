@@ -102,6 +102,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ff8affdfd790b14fbb2939b705e1dec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  goodGodWorshiper: {fileID: 21300000, guid: e0b11d3af5b16b74b8812fe8069bde82, type: 3}
+  evilGodWorshiper: {fileID: 21300000, guid: 0ea9bcf99ab9c0d41b1bbff8351b0067, type: 3}
+  weirdGodWorshiper: {fileID: 21300000, guid: 0d5bb2c6148ba3e4e8bee8e2a3d30ec4, type: 3}
+  goodGod: {fileID: 21300000, guid: 4aa8addf5c354e54dae3f0f516ec93a4, type: 3}
+  evilGod: {fileID: 21300000, guid: 82a8e2ec5f379104cacd47ec0ce2a606, type: 3}
+  weirdGod: {fileID: 21300000, guid: 30469aa55d36dfd4ba133ff87a26caab, type: 3}
   mainCamera: {fileID: 0}
   moveSpeed: 5
   dashSpeed: 10
@@ -123,7 +129,7 @@ MonoBehaviour:
   WorshiperSprite: {fileID: 0}
   propagationRange: {fileID: 6885266551631969429}
   battleStartUIController: {fileID: 0}
-  emojiController: {fileID: 1716898379732909865}
+  EmojiController: {fileID: 0}
 --- !u!50 &2670906108032369855
 Rigidbody2D:
   serializedVersion: 4
@@ -368,14 +374,3 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4180859331731663617, guid: e264727122db31148acc3c644a4f8ae8, type: 3}
   m_PrefabInstance: {fileID: 4287678132898250597}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1716898379732909865 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3193968517039800396, guid: e264727122db31148acc3c644a4f8ae8, type: 3}
-  m_PrefabInstance: {fileID: 4287678132898250597}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 713ab264e956b034ca911dd3fee664e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

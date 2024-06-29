@@ -5,6 +5,13 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private Sprite goodGodWorshiper;
+    [SerializeField] private Sprite evilGodWorshiper;
+    [SerializeField] private Sprite weirdGodWorshiper;
+    [SerializeField] private Sprite goodGod;
+    [SerializeField] private Sprite evilGod;
+    [SerializeField] private Sprite weirdGod;
+
     [SerializeField] private Camera mainCamera;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float dashSpeed = 10f;
@@ -78,6 +85,28 @@ public class PlayerController : MonoBehaviour
 
         // 초기 위치에서 가만히 서있도록 설정
         moveDestination = rb.position;
+
+        // 플레이어가 숭배하기로 한 신에 맞는 신도의 스프라이트를 사용
+        WorshipPropagationController propagationController = GetComponent<WorshipPropagationController>();
+        string godName = SessionData.Instance.SelectedGod;
+        if (godName == "Strange")
+        {
+            spriteRenderer.sprite = weirdGodWorshiper;
+            propagationController.WorshiperSprite = weirdGodWorshiper;
+            propagationController.GodSprite = weirdGod;
+        }
+        else if (godName == "Good")
+        {
+            spriteRenderer.sprite = goodGodWorshiper;
+            propagationController.WorshiperSprite = goodGodWorshiper;
+            propagationController.GodSprite = goodGod;
+        }
+        else if (godName == "Evil")
+        {
+            spriteRenderer.sprite = evilGodWorshiper;
+            propagationController.WorshiperSprite = evilGodWorshiper;
+            propagationController.GodSprite = evilGod;
+        }
     }
 
     private void Update()
