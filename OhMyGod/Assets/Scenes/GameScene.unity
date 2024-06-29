@@ -273,6 +273,71 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 234670109}
   m_CullTransparentMesh: 1
+--- !u!1001 &321607282
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2902565748846162192, guid: 58f134e5e18919540aef833284a16f32, type: 3}
+      propertyPath: m_Name
+      value: MainGameTilemap
+      objectReference: {fileID: 0}
+    - target: {fileID: 5025137091807733343, guid: 58f134e5e18919540aef833284a16f32, type: 3}
+      propertyPath: m_ChunkCullingBounds.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5025137091807733343, guid: 58f134e5e18919540aef833284a16f32, type: 3}
+      propertyPath: m_ChunkCullingBounds.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7105922218363228300, guid: 58f134e5e18919540aef833284a16f32, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -85.44
+      objectReference: {fileID: 0}
+    - target: {fileID: 7105922218363228300, guid: 58f134e5e18919540aef833284a16f32, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 57.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 7105922218363228300, guid: 58f134e5e18919540aef833284a16f32, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7105922218363228300, guid: 58f134e5e18919540aef833284a16f32, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7105922218363228300, guid: 58f134e5e18919540aef833284a16f32, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7105922218363228300, guid: 58f134e5e18919540aef833284a16f32, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7105922218363228300, guid: 58f134e5e18919540aef833284a16f32, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7105922218363228300, guid: 58f134e5e18919540aef833284a16f32, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7105922218363228300, guid: 58f134e5e18919540aef833284a16f32, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7105922218363228300, guid: 58f134e5e18919540aef833284a16f32, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 58f134e5e18919540aef833284a16f32, type: 3}
 --- !u!1 &618540248
 GameObject:
   m_ObjectHideFlags: 0
@@ -931,11 +996,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1930376903532689183, guid: 130fd3ae36aac6448b1ed21652b8e0ae, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 2.81
       objectReference: {fileID: 0}
     - target: {fileID: 1930376903532689183, guid: 130fd3ae36aac6448b1ed21652b8e0ae, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 2.07
       objectReference: {fileID: 0}
     - target: {fileID: 1930376903532689183, guid: 130fd3ae36aac6448b1ed21652b8e0ae, type: 3}
       propertyPath: m_LocalPosition.z
@@ -981,6 +1046,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 7346704012105226235, guid: 130fd3ae36aac6448b1ed21652b8e0ae, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 510f4034b81985843a814d9e717e1504, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -995,3 +1064,4 @@ SceneRoots:
   - {fileID: 618540252}
   - {fileID: 898461737}
   - {fileID: 649793917}
+  - {fileID: 321607282}
