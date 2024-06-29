@@ -57,7 +57,8 @@ public class WorshiperController : MonoBehaviour
 
     public void Die()
     {
-        GetComponentInChildren<EmojiController>().PopupEmoji(EmojiType.Sad);
+        EmojiType randomEmoji = Random.Range(0f, 1f) < 0.5f ? EmojiType.NoComment : EmojiType.Annoyed;
+        GetComponentInChildren<EmojiController>().PopupEmoji(randomEmoji);
         transform.DOShakeScale(1f).OnComplete(()=> {
             transform.DOScale(0f, 1f).SetEase(Ease.InExpo).OnComplete(() => {
                 Destroy(gameObject);

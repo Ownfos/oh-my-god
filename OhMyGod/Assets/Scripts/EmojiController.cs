@@ -10,6 +10,8 @@ public enum EmojiType
     Happy,
     Sad,
     Celebrate,
+    NoComment,
+    Annoyed,
 }
 
 public class EmojiController : MonoBehaviour
@@ -19,12 +21,19 @@ public class EmojiController : MonoBehaviour
     [SerializeField] private Sprite happy;
     [SerializeField] private Sprite sad;
     [SerializeField] private Sprite celebrate;
+    [SerializeField] private Sprite noComment;
+    [SerializeField] private Sprite annoyed;
 
     private SpriteRenderer spriteRenderer;
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    private void OnDestroy()
+    {
+        transform.DOKill();
     }
 
     public void PopupEmoji(EmojiType type)
@@ -49,15 +58,23 @@ public class EmojiController : MonoBehaviour
         {
             spriteRenderer.sprite = celebrate;
         }
+        else if (type == EmojiType.NoComment)
+        {
+            spriteRenderer.sprite = noComment;
+        }
+        else if (type == EmojiType.Annoyed)
+        {
+            spriteRenderer.sprite = annoyed;
+        }
 
         // 1. 커지기
         transform.DOKill();
         transform.localScale = Vector3.zero;
-        transform.DOScale(1f, 1f).SetEase(Ease.OutSine).OnComplete(() => {
+        transform.DOScale(1f, 0.5f).SetEase(Ease.OutBounce).OnComplete(() => {
             // 2. 1초 대기
-            transform.DOScale(1f, 1f).SetEase(Ease.Linear).OnComplete(() => {
+            transform.DOScale(1f, 0.5f).SetEase(Ease.Linear).OnComplete(() => {
                 // 3. 사라지기
-                transform.DOScale(0f, 1f).SetEase(Ease.InSine);
+                transform.DOScale(0f, 0.3f).SetEase(Ease.InSine);
             });
         });
     }

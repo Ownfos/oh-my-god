@@ -102,3 +102,5 @@ MonoBehaviour:
   happy: {fileID: 21300000, guid: c4f22fcf598a9234b8f4e9a81d337426, type: 3}
   sad: {fileID: 21300000, guid: 5ce50e03e0fa9bc44beb218f79e1dea9, type: 3}
   celebrate: {fileID: 21300000, guid: aed708431d9aea24bbeb175f7cbf63ec, type: 3}
+  noComment: {fileID: 21300000, guid: 796a37262459d054080c99abd83e2926, type: 3}
+  annoyed: {fileID: 21300000, guid: 6f37c98812a634d41ad3b1861fd97373, type: 3}

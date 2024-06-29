@@ -16,6 +16,7 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private RectTransform rightBattleUI; // 우측 진영 UI
     [SerializeField] private Image rightGodImage;
     [SerializeField] private Slider rightWorshipGauge;
+    [SerializeField] private GameoverController gameoverController;
 
     // 현재 숭배 배틀이 진행중인가?
     // 이미 시작되었는데 또 시작하는 상황을 방지함
@@ -92,7 +93,7 @@ public class BattleUIController : MonoBehaviour
             {
                 EndBattle(leftTeam, rightTeam);
             }
-            else if (leftWorshipGauge.value >= 1f)
+            else if (rightWorshipGauge.value >= 1f)
             {
                 EndBattle(rightTeam, leftTeam);
             }
@@ -144,8 +145,16 @@ public class BattleUIController : MonoBehaviour
                     loseTeam.ActiveWorshipers[i].Die();
                 }
 
-                // TODO: 플레이어가 죽는 경우 게임오버 처리하기
-                Destroy(loseTeam.gameObject);
+                // 플레이어가 죽는 경우 게임오버 처리하기
+                if (loseTeam.gameObject.CompareTag("Player"))
+                {
+                    gameoverController.ShowBadEnding();
+                }
+                // 적이었다면 그냥 삭제
+                else
+                {
+                    Destroy(loseTeam.gameObject);
+                }
             }
             else
             {
