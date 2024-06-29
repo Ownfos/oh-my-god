@@ -531,6 +531,10 @@ PrefabInstance:
       propertyPath: m_Text
       value: WEIRD GOD
       objectReference: {fileID: 0}
+    - target: {fileID: 4268400898922844221, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1094887073, guid: 61d5407cee959024b8b974b8f8285a35, type: 3}
     - target: {fileID: 4823686427941276920, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -932,6 +936,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: godEvilSelect
       objectReference: {fileID: 0}
+    - target: {fileID: 4268400898922844221, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -1875085045, guid: 61d5407cee959024b8b974b8f8285a35, type: 3}
     - target: {fileID: 4823686427941276920, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
