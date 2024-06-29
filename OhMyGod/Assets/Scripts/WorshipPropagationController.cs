@@ -24,12 +24,16 @@ public class WorshipPropagationController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // 중립 npc 집단(1인 이상)이 포교 범위에 들어왔는지 체크
+        // 중립 npc 집단(1인 이상)이 포교 범위에 들어왔는지 체크.
+        // 두 번째 if문 조건은 내가 처음 포교를 시도하는 것인지 확인해줌.
+        //
+        // Note:
+        // 만약 먼저 포교를 시도하던 상대방이 있다면
+        // 무조건 PropagationDuration이 0 이상이기 때문에
+        // 이 값이 0이라면 내가 첫 순서라고 확신할 수 있음
         var group = other.gameObject.GetComponentInParent<NeutralWorshiperGroup>();
-        if (group != null)
+        if (group != null && Mathf.Approximately(group.PropagationDuration, 0f))
         {
-            // TODO: 내가 먼저 포교를 시작한게 맞는지 확인할 것!
-            // 적이 먼저 포교중이었다면 나는 우선 순위가 낮아서 처리하면 안됨
             propagationTargetGroups.Add(group);
         }
     }
