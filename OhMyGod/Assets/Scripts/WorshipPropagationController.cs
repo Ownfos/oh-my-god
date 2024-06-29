@@ -27,6 +27,10 @@ public class WorshipPropagationController : MonoBehaviour
     // 신도 수에 비례해서 카메라의 시야를 넓힐 수 있다.
     [SerializeField] private GameObject propagationRange;
     [SerializeField] private CinemachineVirtualCamera cinemachineCamera;
+    public GameObject GetPropagationRange()
+    {
+        return propagationRange;
+    }
     [SerializeField] private BattleUIController battleStartUIController;
     public EmojiController EmojiController;
 
