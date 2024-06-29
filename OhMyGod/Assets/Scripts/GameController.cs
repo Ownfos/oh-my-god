@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour
     public GameObject dummyEnemyRight;
 
     [SerializeField] private List<Transform> spawnPoints; // 유니티 에디터에서 지정할 수 있도록 설정
+     [SerializeField] private RankingSystem rankingSystem; // 
 
     private PlayerController playerController;
 
@@ -59,13 +60,22 @@ public class GameController : MonoBehaviour
         List<Transform> shuffledSpawnPoints = new List<Transform>(spawnPoints);
         Shuffle(shuffledSpawnPoints);
 
-        // DummyEnemyLeft 이동
+         // DummyEnemyLeft 이동
         dummyEnemyLeft.transform.position = shuffledSpawnPoints[0].position;
+        var leftController = dummyEnemyLeft.GetComponent<WorshipPropagationController>();
+        if (leftController != null)
+        {
+            rankingSystem.AddCompetitor(leftController); // RankingSystem에 등록
+        }
 
         // DummyEnemyRight 이동
         dummyEnemyRight.transform.position = shuffledSpawnPoints[1].position;
+        var rightController = dummyEnemyRight.GetComponent<WorshipPropagationController>();
+        if (rightController != null)
+        {
+            rankingSystem.AddCompetitor(rightController); // RankingSystem에 등록
+        }
     }
-
     void Shuffle<T>(List<T> list)
     {
         int n = list.Count;
