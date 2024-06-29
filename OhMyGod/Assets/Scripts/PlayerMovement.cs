@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     private bool canMove = false;
+    public float speed = 5.0f; // speed 변수 선언 및 초기화
 
     void Update()
     {
