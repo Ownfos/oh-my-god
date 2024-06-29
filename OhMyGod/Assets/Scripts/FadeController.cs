@@ -4,7 +4,7 @@ using System.Collections;
 
 public class FadeController : MonoBehaviour
 {
-    [SerializeField] private Image fadeImage;
+    public Image fadeImage;
     public float fadeDuration = 2.0f;
 
     public IEnumerator FadeIn()
