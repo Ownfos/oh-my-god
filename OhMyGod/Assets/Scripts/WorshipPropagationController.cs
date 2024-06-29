@@ -42,6 +42,9 @@ public class WorshipPropagationController : MonoBehaviour
     // 포교에 실패하면 중립 npc는 그대로 소멸한다.
     private const float PROPAGATION_SUCCESS_RATE = 0.8f;
 
+    // 이상한 신이 포교에 성공할 때마다 추가적으로 신도를 한 명 추가할 확률
+    private const float WEIRED_GOD_BONUS_PROPAGATION_RATE = 0.3f;
+
     // 배틀에서 진 팀은 잠시동안 다시 배틀을 할 수 없도록 보호함
     private float protectionPeriod = 0f;
     public bool IsProtected {get => protectionPeriod > 0f; }
@@ -51,6 +54,14 @@ public class WorshipPropagationController : MonoBehaviour
     // 카운터가 0이 되는 순간에만 propagationTargetGroups에서 제거한다.
     private HashSet<NeutralWorshiperGroup> propagationTargetGroups = new();
     private Dictionary<NeutralWorshiperGroup, int> groupEncounterCount = new();
+
+    // 좋은신을 고른 경우 포섭 확률이 증가하지만 포섭에 실패하면
+    // 오히려 10초동안 포섭 시간이 증가하는 디버프를 지님
+    private float propagationSuccessRateDebuffDuration = 0f;
+
+    // 악한 신을 고른 경우 포섭 시간이 빨라지는 대신 10초마다 신도를 잃을 위험이 있음
+    private const float EVIL_GOD_DEBUFF_CYCLE = 10f;
+    private float evilGodDebuffTimer = EVIL_GOD_DEBUFF_CYCLE;
 
     private void Awake()
     {
@@ -65,7 +76,39 @@ public class WorshipPropagationController : MonoBehaviour
         // 중립 npc 포교 활동
         UpdatePropagationTime();
 
+        // 각종 타이머 시간 기록
         protectionPeriod -= Time.deltaTime;
+        propagationSuccessRateDebuffDuration -= Time.deltaTime;
+
+        if (SelectedGod == GodType.Evil)
+        {
+            evilGodDebuffTimer -= Time.deltaTime;
+            if (evilGodDebuffTimer < 0f)
+            {
+                // 타이머 리셋
+                evilGodDebuffTimer = EVIL_GOD_DEBUFF_CYCLE;
+
+                // 10% 확률로 신도를 1~3명 잃음
+                if (UnityEngine.Random.Range(0f, 1f) < 0.1f)
+                {
+                    // 배열의 마지막에서부터 한 명씩 처리
+                    int NumWorshipersLost = UnityEngine.Random.Range(1, 3);
+                    for (int i = 0; i < NumWorshipersLost; ++i)
+                    {
+                        int lastWorshiperIndex = ActiveWorshipers.Count - 1;
+
+                        // 이미 모든 신도를 잃었다는 뜻이므로 더 죽이지 않음
+                        if (lastWorshiperIndex == -1)
+                        {
+                            break;
+                        }
+
+                        ActiveWorshipers[lastWorshiperIndex].Die();
+                        ActiveWorshipers.RemoveAt(lastWorshiperIndex);
+                    }
+                }
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -150,24 +193,43 @@ public class WorshipPropagationController : MonoBehaviour
             // 얼마나 오랜 시간 포교에 노출되었는가?
             group.PropagationDuration += Time.deltaTime;
 
+            float finalRequiredTime = REQUIRED_PROPAGATION_TIME;
             // 악한 신을 믿는 경우 포교에 필요한 시간이 20% 감소함
-            float finalRequiredTime = SelectedGod == GodType.Evil ? REQUIRED_PROPAGATION_TIME * 0.8f : REQUIRED_PROPAGATION_TIME;
+            if (SelectedGod == GodType.Evil)
+            {
+                finalRequiredTime *= 0.8f;
+            }
+            // 선한 신을 믿는 경우 10초 이내에 포교에 실패한 기록이 있다면 소요 시간이 50% 증가함
+            else if (SelectedGod == GodType.Good && propagationSuccessRateDebuffDuration > 0f)
+            {
+                finalRequiredTime *= 1.5f;
+            }
+
             if (group.PropagationDuration > finalRequiredTime)
             {
                 // 포교 성공 판정을 굴린 npc들은 더이상 관리하지 않음 (신도가 되거나 소멸하거나)
                 groupsToDelete.Add(group);
 
+                // 이번 그룹에 속한 중립 NPC의 수
+                int maxNumSuccess = group.NumWorshipers;
+
                 // 착한 신을 믿는 경우 포교 성공 확률이 10%p 증가함
                 float finalSuccessRate = SelectedGod == GodType.Good ? PROPAGATION_SUCCESS_RATE + 0.1f : PROPAGATION_SUCCESS_RATE;
                 int numSuccess = group.PerformPropagation(finalSuccessRate, this);
 
-                // TODO: 이상한 신을 믿는 경우 20% 확률로 도플갱어 획득
+                // 선한 신을 믿는 경우 한 명이라도 포교에 실패하면 10초간 포교 시간 디버프 부여
+                if (SelectedGod == GodType.Good && numSuccess != maxNumSuccess)
+                {
+                    propagationSuccessRateDebuffDuration = 10f;
+                }
+
+                // 이상한 신을 믿는 경우 30% 확률로 도플갱어 획득
                 if (SelectedGod == GodType.Weird)
                 {
                     int numExtraSuccess = 0;
                     for (int i = 0; i < numSuccess; ++i)
                     {
-                        if (UnityEngine.Random.Range(0f, 1f) < 0.2f)
+                        if (UnityEngine.Random.Range(0f, 1f) < WEIRED_GOD_BONUS_PROPAGATION_RATE)
                         {
                             numExtraSuccess++;
 
@@ -179,6 +241,7 @@ public class WorshipPropagationController : MonoBehaviour
                     }
                     numSuccess += numExtraSuccess;
                 }
+
 
                 // 포교 성공한 인원 수만큼 스킬 게이지 회복
                 SkillGauge = Math.Clamp(SkillGauge + numSuccess, 0, MAX_SKILL_GUAGE);
