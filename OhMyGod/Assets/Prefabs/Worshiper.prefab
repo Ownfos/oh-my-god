@@ -161,6 +161,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 572b23307034aa749b3bb9de5b014072, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxMoveSpeed: 10
+  maxMoveSpeed: 20
   moveAcceleration: 100
   FollowTarget: {fileID: 0}
