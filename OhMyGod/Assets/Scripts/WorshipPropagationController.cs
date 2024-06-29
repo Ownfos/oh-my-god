@@ -162,6 +162,23 @@ public class WorshipPropagationController : MonoBehaviour
                 int numSuccess = group.PerformPropagation(finalSuccessRate, this);
 
                 // TODO: 이상한 신을 믿는 경우 20% 확률로 도플갱어 획득
+                if (SelectedGod == GodType.Weird)
+                {
+                    int numExtraSuccess = 0;
+                    for (int i = 0; i < numSuccess; ++i)
+                    {
+                        if (UnityEngine.Random.Range(0f, 1f) < 0.2f)
+                        {
+                            numExtraSuccess++;
+
+                            // 마지막 신도 복제
+                            WorshiperController worshiper = ActiveWorshipers[ActiveWorshipers.Count - 1];
+                            GameObject bonusWorshiper = Instantiate(worshiper.gameObject);
+                            AddWorshiper(bonusWorshiper.GetComponent<WorshiperController>());
+                        }
+                    }
+                    numSuccess += numExtraSuccess;
+                }
 
                 // 포교 성공한 인원 수만큼 스킬 게이지 회복
                 SkillGauge = Math.Clamp(SkillGauge + numSuccess, 0, MAX_SKILL_GUAGE);
