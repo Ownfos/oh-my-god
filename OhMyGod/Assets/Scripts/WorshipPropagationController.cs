@@ -20,8 +20,11 @@ public class WorshipPropagationController : MonoBehaviour
     // 포교에 실패하면 중립 npc는 그대로 소멸한다.
     private const float PROPAGATION_SUCCESS_RATE = 0.8f;
 
-    // 포교 범위에 들어온 모든 중립 npc 무리
+    // 포교 범위에 들어온 모든 중립 npc 무리와
+    // 무리에 속한 npc를 몇 명 동시에 마주쳤는지 세는 카운터.
+    // 카운터가 0이 되는 순간에만 propagationTargetGroups에서 제거한다.
     private HashSet<NeutralWorshiperGroup> propagationTargetGroups = new();
+    private Dictionary<NeutralWorshiperGroup, int> groupEncounterCount = new();
 
     private void Awake()
     {
@@ -49,17 +52,28 @@ public class WorshipPropagationController : MonoBehaviour
         if (group != null && Mathf.Approximately(group.PropagationDuration, 0f))
         {
             propagationTargetGroups.Add(group);
+
+            // 만약 이 집단을 처음 만나는 경우라면 집단 내의 유닛 중 만난 수를 0으로 초기화
+            groupEncounterCount.TryAdd(group, 0);
+
+            // 이 집단 소속의 중립 npc를 한 명 더 만났다고 기록
+            groupEncounterCount[group]++;
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        // 중립 npc 집단(1인 이상)이 포교 범위에서 나갔는지 체크
+        // 중립 npc 집단(1인 이상)의 모든 인원이 포교 범위에서 나갔는지 체크
+        // Note: 한 명은 나갔지만 다른 인원들이 범위 안에 있을 수 있으므로 npc 카운팅을 해줘야 함
         var group = other.gameObject.GetComponentInParent<NeutralWorshiperGroup>();
         if (group != null)
         {
-            propagationTargetGroups.Remove(group);
-            group.PropagationDuration = 0f;
+            groupEncounterCount[group]--;
+            if (groupEncounterCount[group] == 0)
+            {
+                propagationTargetGroups.Remove(group);
+                group.PropagationDuration = 0f;
+            }
         }
     }
 
@@ -84,8 +98,10 @@ public class WorshipPropagationController : MonoBehaviour
                 // 집단 포교에 단 한명도 성공하지 못한 경우 패널티로 신도수-1 부여
                 if (group.NumWorshipers > 1 && numSuccess == 0)
                 {
-                    // TODO: 내 신도 한 명 없애기
-                    Debug.Log("집단 전도에 완전히 실패해 신도 수가 감소합니다...");
+                    WorshiperController worshiper = ActiveWorshipers[ActiveWorshipers.Count - 1];
+                    ActiveWorshipers.Remove(worshiper);
+
+                    Destroy(worshiper);
                 }
             }
         }
