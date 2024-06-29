@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using DG.Tweening; // DOTween 네임스페이스 추가
 
 public class GameController : MonoBehaviour
 {
     public Text countdownText; // 카운트다운 텍스트
     public FadeController fadeController;
+    public float numberScale = 3.0f; // 숫자의 최종 크기
 
     void Start()
     {
@@ -15,6 +17,19 @@ public class GameController : MonoBehaviour
 
     IEnumerator StartSequence()
     {
+        // fadeController와 countdownText가 null인지 확인
+        if (fadeController == null)
+        {
+            Debug.LogError("fadeController가 설정되지 않았습니다.");
+            yield break;
+        }
+
+        if (countdownText == null)
+        {
+            Debug.LogError("countdownText가 설정되지 않았습니다.");
+            yield break;
+        }
+
         yield return StartCoroutine(fadeController.FadeIn());
 
         // 카운트다운 시작
@@ -29,10 +44,14 @@ public class GameController : MonoBehaviour
         for (int i = 3; i > 0; i--)
         {
             countdownText.text = i.ToString();
+            countdownText.transform.localScale = Vector3.zero; // 시작 크기 설정
+            countdownText.transform.DOScale(numberScale, 1f).SetEase(Ease.OutBounce); // DOScale 애니메이션 설정
             yield return new WaitForSecondsRealtime(1);
         }
 
         countdownText.text = "Start!";
+        countdownText.transform.localScale = Vector3.zero; // 시작 크기 설정
+        countdownText.transform.DOScale(numberScale, 1f).SetEase(Ease.OutBounce); // DOScale 애니메이션 설정
         yield return new WaitForSecondsRealtime(1);
 
         countdownText.gameObject.SetActive(false); // 카운트다운 텍스트 비활성화
