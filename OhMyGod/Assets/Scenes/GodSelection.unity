@@ -151,6 +151,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: goodImage
       objectReference: {fileID: 0}
+    - target: {fileID: 2876906178941315312, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3428094469190313950, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Text
       value: GOOD GOD
@@ -267,7 +271,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &276098521 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 7797515394289266334, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+  m_CorrespondingSourceObject: {fileID: 2876906178941315312, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
   m_PrefabInstance: {fileID: 276098519}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &276098522 stripped
@@ -372,11 +376,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!1 &372892034 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7797515394289266334, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
-  m_PrefabInstance: {fileID: 1580593718016534286}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &636937499
 GameObject:
   m_ObjectHideFlags: 0
@@ -502,7 +501,7 @@ MonoBehaviour:
   godEvilSelect: {fileID: 1580593718016534287}
   godStrangeSelect: {fileID: 688920954}
   godGoodText: {fileID: 276098521}
-  godEvilText: {fileID: 372892034}
+  godEvilText: {fileID: 1580593718016534288}
   godStrangeText: {fileID: 779174945}
 --- !u!114 &688920954 stripped
 MonoBehaviour:
@@ -523,6 +522,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 636937503}
     m_Modifications:
+    - target: {fileID: 2876906178941315312, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2946700484389164787, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Name
       value: godWeirdSelect
@@ -531,10 +534,22 @@ PrefabInstance:
       propertyPath: m_Text
       value: WEIRD GOD
       objectReference: {fileID: 0}
+    - target: {fileID: 4183958399859301991, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_Text
+      value: "\u300E\uACF5\uD5C8\uC758 \uB3C4\uBC15\uC0AC \uD64D\uAE38\uB3D9\u300F"
+      objectReference: {fileID: 0}
     - target: {fileID: 4268400898922844221, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 1094887073, guid: 61d5407cee959024b8b974b8f8285a35, type: 3}
+    - target: {fileID: 4600103708915897242, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_Text
+      value: "- \uB354\uBE14 \uC22D\uBC30 -\n\uC911\uB9BD NPC 1\uBA85 \uD3EC\uC12D
+        \uC131\uACF5 \uC2DC\n30% \uD655\uB960\uB85C 1\uBA85\uC744 \uB354 \uD3EC\uC12D\uD569\uB2C8\uB2E4\n\n-
+        \uAC00\uBCBC\uC6B4 \uBC1C\uAC78\uC74C -\n\uBC30\uD2C0\uC5D0\uC11C \uD328\uBC30\uD560
+        \uACBD\uC6B0 \uD604\uC7AC \uC9D1\uB2E8\uC758\n\uC808\uBC18\uC774 \uC544\uB2C8\uB77C
+        2/3\uB9CC\uD07C \uC720\uB2DB\uC744 \uBE7C\uC557\uAE40"
+      objectReference: {fileID: 0}
     - target: {fileID: 4823686427941276920, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -651,7 +666,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &779174945 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 7797515394289266334, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+  m_CorrespondingSourceObject: {fileID: 2876906178941315312, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
   m_PrefabInstance: {fileID: 779174943}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &779174946 stripped
@@ -932,14 +947,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 636937503}
     m_Modifications:
+    - target: {fileID: 2876906178941315312, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2946700484389164787, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Name
       value: godEvilSelect
+      objectReference: {fileID: 0}
+    - target: {fileID: 4183958399859301991, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_Text
+      value: "\u300E\uC601\uC6D0\uC758 \uAC10\uC2DC\uC790 \uB098\uC988\uC6B8\u300F"
       objectReference: {fileID: 0}
     - target: {fileID: 4268400898922844221, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: -1875085045, guid: 61d5407cee959024b8b974b8f8285a35, type: 3}
+    - target: {fileID: 4600103708915897242, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_Text
+      value: "- \uC545\uB9C8\uC758 \uC720\uD639 -\n\uD3EC\uC12D\uC2DC\uAC04\uC774
+        20% \uAC10\uD569\uB2C8\uB2E4\n\n- \uB9DD\uC790\uC758 \uBC30\uC2E0 -\n10\uCD08\uB9C8\uB2E4
+        10%\uD655\uB960\uB85C \uC720\uB2DB\n1~3\uBA85\uC774 \uC9D1\uB2E8\uC5D0\uC11C
+        \uD0C8\uD1F4\uD569\uB2C8\uB2E4"
+      objectReference: {fileID: 0}
     - target: {fileID: 4823686427941276920, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1044,6 +1074,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1580593718016534288 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2876906178941315312, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+  m_PrefabInstance: {fileID: 1580593718016534286}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
