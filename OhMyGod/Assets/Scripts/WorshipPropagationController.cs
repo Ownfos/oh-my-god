@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,12 @@ public class WorshipPropagationController : MonoBehaviour
 
     public SpriteRenderer SpriteRenderer {get; private set;}
     public List<WorshiperController> ActiveWorshipers {get; private set;}
+
+    // 배틀 중 사용하는 액티브 스킬은 포교로만 모을 수 있는 스킬 게이지를 소모함.
+    // 최소 0, 최대 10, 한 명 섭외할 때마다 1씩 회복.
+    public int SkillGauge {get; set;} = 0;
+
+    private const int MAX_SKILL_GUAGE = 10;
 
     // 중립 npc 포교에 필요한 노출 시간
     // TODO: 종교 특성에 따라 20% 감소 가능하도록 수정
@@ -93,7 +100,10 @@ public class WorshipPropagationController : MonoBehaviour
                 groupsToDelete.Add(group);
 
                 // TODO: 종교 특성에 따라 성공 확률 달라지도록 수정
-                int numSuccess = group.PerformPropagation(PROPAGATION_SUCCESS_RATE, this);
+                int numSuccess = group.PerformPropagation(ActiveWorshipers.Count == 0? PROPAGATION_SUCCESS_RATE : 0f, this);
+
+                // 포교 성공한 인원 수만큼 스킬 게이지 회복
+                SkillGauge = Math.Clamp(SkillGauge + numSuccess, 0, MAX_SKILL_GUAGE);
 
                 // 집단 포교에 단 한명도 성공하지 못한 경우 패널티로 신도수-1 부여
                 if (group.NumWorshipers > 1 && numSuccess == 0)
@@ -101,7 +111,7 @@ public class WorshipPropagationController : MonoBehaviour
                     WorshiperController worshiper = ActiveWorshipers[ActiveWorshipers.Count - 1];
                     ActiveWorshipers.Remove(worshiper);
 
-                    Destroy(worshiper);
+                    Destroy(worshiper.gameObject);
                 }
             }
         }
