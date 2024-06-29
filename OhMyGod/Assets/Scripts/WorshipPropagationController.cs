@@ -8,9 +8,14 @@ using UnityEngine;
 // 플레이어와 AI 모두 사용한다.
 public class WorshipPropagationController : MonoBehaviour
 {
+    // 상대 집단과의 숭배 배틀 UI에 등장할 이미지들
+    public Sprite GodSprite;
+    public Sprite WorshiperSprite;
+
     // 포교 범위 트리거가 달린 자식 게임 오브젝트.
     // 신도 수에 따라 반지름이 커진다.
     [SerializeField] private GameObject propagationRange;
+    [SerializeField] private BattleStartUIController battleStartUIController;
 
     public SpriteRenderer SpriteRenderer {get; private set;}
     public List<WorshiperController> ActiveWorshipers {get; private set;}
@@ -39,6 +44,7 @@ public class WorshipPropagationController : MonoBehaviour
         ActiveWorshipers = new();
 
         SpriteRenderer = GetComponent<SpriteRenderer>();
+        battleStartUIController = GetComponent<BattleStartUIController>();
     }
 
     private void Update()
@@ -68,6 +74,26 @@ public class WorshipPropagationController : MonoBehaviour
 
             // 이 집단 소속의 중립 npc를 한 명 더 만났다고 기록
             groupEncounterCount[group]++;
+        }
+
+        // 상대 종교 집단과의 조우 => 숭배 배틀 시작
+        var enemyGroupController = other.gameObject.GetComponentInParent<WorshipPropagationController>();
+        if (enemyGroupController != null)
+        {
+            TryStartBattle(enemyGroupController);
+        }
+    }
+
+    private void TryStartBattle(WorshipPropagationController enemyGroupController)
+    {
+        // Note: 이 컴포넌트는 플레이어만 갖고있어서 상대방도 배틀을 시작하려 하는 것을 막아줌
+        // TriggerEnter 이벤트가 배틀 시작할 때 여러 번 발동할 수 있으므로 active가 아닌 경우에만 배틀을 새로 시작함...
+        if (battleStartUIController != null && !battleStartUIController.isBattleActive)
+        {
+            battleStartUIController.PlayBattleStartUI(this, enemyGroupController, () => {
+                Debug.Log("배틀 시작!!!");
+                battleStartUIController.ResetBattleUI();
+            });
         }
     }
 
