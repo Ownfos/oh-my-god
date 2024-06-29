@@ -22,9 +22,9 @@ public class TimeoutController : MonoBehaviour
 
         // 테스트용으로 여기서 바로 타이머 시작.
         // 실제로는 GameController에서 카운트다운 끝나면 시작해야 함
-        StartTimer();
+        // StartTimer();
 
-        Debug.Log(SessionData.Instance.SelectedGod);
+        // Debug.Log(SessionData.Instance.SelectedGod);
     }
 
     public void StartTimer()

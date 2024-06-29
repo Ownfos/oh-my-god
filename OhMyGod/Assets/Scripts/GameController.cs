@@ -15,7 +15,8 @@ public class GameController : MonoBehaviour
     public GameObject dummyEnemyRight;
 
     [SerializeField] private List<Transform> spawnPoints; // 유니티 에디터에서 지정할 수 있도록 설정
-     [SerializeField] private RankingSystem rankingSystem; // 
+    [SerializeField] private RankingSystem rankingSystem; // 
+    [SerializeField] private TimeoutController timeoutController;
 
     private PlayerController playerController;
 
@@ -231,6 +232,9 @@ public class GameController : MonoBehaviour
 
         countdownText.gameObject.SetActive(false);
         Debug.Log("Countdown completed. Starting game.");
+
+        // 게임이 시작되었으니 제한시간도 줄어들기 시작해야 함
+        timeoutController.StartTimer();
     }
 
     void StartGame()
