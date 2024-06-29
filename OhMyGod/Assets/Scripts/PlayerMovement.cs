@@ -3,14 +3,13 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     private bool canMove = false;
-    public float speed = 5.0f; // speed 변수 선언 및 초기화
+    public float speed = 5.0f;
 
     void Update()
     {
         if (!canMove)
             return;
 
-        // 기존의 움직임 로직
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
