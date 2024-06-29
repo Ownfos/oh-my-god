@@ -10,9 +10,11 @@ TrueTypeFontImporter:
   includeFontData: 1
   fontNames:
   - DNF Forged Blade
-  fallbackFontReferences: []
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 958e3cc4a7d0fc246a572e5dd5a74346, type: 3}
+  - {fileID: 12800000, guid: 6a98037e2e172824f9a44fd5aef4e94b, type: 3}
   customCharacters: 
-  fontRenderingMode: 0
+  fontRenderingMode: 2
   ascentCalculationMode: 1
   useLegacyBoundsCalculation: 0
   shouldRoundAdvanceValue: 1

@@ -15,7 +15,7 @@ public class WorshipPropagationController : MonoBehaviour
     // 포교 범위 트리거가 달린 자식 게임 오브젝트.
     // 신도 수에 따라 반지름이 커진다.
     [SerializeField] private GameObject propagationRange;
-    [SerializeField] private BattleStartUIController battleStartUIController;
+    [SerializeField] private BattleUIController battleStartUIController;
 
     public SpriteRenderer SpriteRenderer {get; private set;}
     public List<WorshiperController> ActiveWorshipers {get; private set;}
@@ -44,7 +44,7 @@ public class WorshipPropagationController : MonoBehaviour
         ActiveWorshipers = new();
 
         SpriteRenderer = GetComponent<SpriteRenderer>();
-        battleStartUIController = GetComponent<BattleStartUIController>();
+        battleStartUIController = GetComponent<BattleUIController>();
     }
 
     private void Update()
@@ -90,10 +90,7 @@ public class WorshipPropagationController : MonoBehaviour
         // TriggerEnter 이벤트가 배틀 시작할 때 여러 번 발동할 수 있으므로 active가 아닌 경우에만 배틀을 새로 시작함...
         if (battleStartUIController != null && !battleStartUIController.isBattleActive)
         {
-            battleStartUIController.PlayBattleStartUI(this, enemyGroupController, () => {
-                Debug.Log("배틀 시작!!!");
-                battleStartUIController.ResetBattleUI();
-            });
+            battleStartUIController.PlayBattleStartUI(this, enemyGroupController);
         }
     }
 
