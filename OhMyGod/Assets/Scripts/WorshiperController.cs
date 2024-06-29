@@ -9,10 +9,12 @@ public class WorshiperController : MonoBehaviour
     public GameObject FollowTarget;
 
     private Rigidbody2D rb;
+    private SpriteRenderer spriteRenderer;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void FixedUpdate()
@@ -21,6 +23,8 @@ public class WorshiperController : MonoBehaviour
         {
             AccelerateTowardsTarget();
         }
+
+        spriteRenderer.flipX = rb.velocity.x < 0f;
     }
 
     private void AccelerateTowardsTarget()

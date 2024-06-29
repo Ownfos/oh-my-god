@@ -8,7 +8,7 @@ public class NeutralWorshiperGroup : MonoBehaviour
 
     public float PropagationDuration {get; set;} = 0;
 
-    private void Start()
+    private void Awake()
     {
         // 내 gameobject의 자식으로 설정된 모든 worshiper
         // 오브젝트를 확인하고 목록으로 정리해둔다.
@@ -37,8 +37,10 @@ public class NeutralWorshiperGroup : MonoBehaviour
 
                 // 그룹으로 묶고 있던 오브젝트 탈출
                 worshiper.gameObject.transform.parent = null;
-                
-                // TODO: 포교 대상의 종교에 맞게 스프라이트 교체하기
+
+                // 포교 대상의 종교에 맞게 스프라이트 교체하기
+                // TODO: 스프라이트가 아니라 애니메이터 교체가 필요할 수도 있음
+                worshiper.GetComponent<SpriteRenderer>().sprite = followTarget.GetComponent<SpriteRenderer>().sprite;
             }
         }
 
