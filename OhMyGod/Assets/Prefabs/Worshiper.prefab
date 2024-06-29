@@ -162,5 +162,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxMoveSpeed: 10
-  moveAcceleration: 5
+  moveAcceleration: 50
   FollowTarget: {fileID: 0}
