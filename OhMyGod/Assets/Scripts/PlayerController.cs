@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
 
     private InputActions inputActions;
     private Rigidbody2D rb;
+    private SpriteRenderer spriteRenderer;
     private Vector3 moveDestination;
 
     private const float MAX_DASH_GAUGE = 10f;
@@ -73,6 +74,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         // 초기 위치에서 가만히 서있도록 설정
         moveDestination = rb.position;
@@ -80,7 +82,11 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        // 대쉬 게이지
         UpdateDashGauge();
+
+        // Note: DOTween으로 움직이니까 velocity 변화가 없어서 속도 기반의 방향 판단이 불가능했음...
+        spriteRenderer.flipX = moveDestination.x < rb.position.x;
     }
 
     // 대쉬 사용 또는 재충전에 의한 게이지 변동 처리

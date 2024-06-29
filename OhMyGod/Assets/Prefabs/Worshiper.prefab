@@ -76,8 +76,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
-  m_Color: {r: 0.5245282, g: 0.5245282, b: 0.5245282, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 986670d267f47174abb4cc04bc0e7c31, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -100,7 +100,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
+  m_LinearDrag: 10
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -146,8 +146,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.5}
-  m_Size: {x: 1, y: 1}
+  m_Offset: {x: -0.20663953, y: -0.7768531}
+  m_Size: {x: 1.6002836, y: 1.6002836}
   m_Direction: 0
 --- !u!114 &2398120818107163702
 MonoBehaviour:
@@ -161,6 +161,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 572b23307034aa749b3bb9de5b014072, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxMoveSpeed: 10
-  moveAcceleration: 5
+  maxMoveSpeed: 20
+  moveAcceleration: 100
   FollowTarget: {fileID: 0}
