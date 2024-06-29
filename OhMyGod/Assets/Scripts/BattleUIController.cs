@@ -77,7 +77,6 @@ public class BattleUIController : MonoBehaviour
                             });
                         });
                     });
-
                 });
             });
         });
@@ -113,7 +112,7 @@ public class BattleUIController : MonoBehaviour
             increaseSpeed = Mathf.Clamp(Mathf.Log(NumWorshipers, 10f), 1f, 3f);
         }
 
-        increaseSpeed *= 2f / 10f;
+        increaseSpeed *= 2f / 100f;
 
         slider.value += increaseSpeed * Time.deltaTime;
     }
