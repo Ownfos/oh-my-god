@@ -33,6 +33,10 @@ public class WorshipPropagationController : MonoBehaviour
     // 포교에 실패하면 중립 npc는 그대로 소멸한다.
     private const float PROPAGATION_SUCCESS_RATE = 0.8f;
 
+    // 배틀에서 진 팀은 잠시동안 다시 배틀을 할 수 없도록 보호함
+    private float protectionPeriod = 0f;
+    public bool IsProtected {get => protectionPeriod > 0f; }
+
     // 포교 범위에 들어온 모든 중립 npc 무리와
     // 무리에 속한 npc를 몇 명 동시에 마주쳤는지 세는 카운터.
     // 카운터가 0이 되는 순간에만 propagationTargetGroups에서 제거한다.
@@ -51,6 +55,8 @@ public class WorshipPropagationController : MonoBehaviour
     {
         // 중립 npc 포교 활동
         UpdatePropagationTime();
+
+        protectionPeriod -= Time.deltaTime;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -75,10 +81,14 @@ public class WorshipPropagationController : MonoBehaviour
             // 이 집단 소속의 중립 npc를 한 명 더 만났다고 기록
             groupEncounterCount[group]++;
         }
+    }
 
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        // 나도 상대도 배틀 배패로 인해 보호 기간이 아닌 상태에서
         // 상대 종교 집단과의 조우 => 숭배 배틀 시작
         var enemyGroupController = other.gameObject.GetComponentInParent<WorshipPropagationController>();
-        if (enemyGroupController != null)
+        if (enemyGroupController != null && !IsProtected && !enemyGroupController.IsProtected)
         {
             TryStartBattle(enemyGroupController);
         }
@@ -190,5 +200,11 @@ public class WorshipPropagationController : MonoBehaviour
         // ex) 25명 정도는 7짜리 원 안에 들어감
         float desiredRadius = Mathf.Ceil(Mathf.Sqrt(ActiveWorshipers.Count)) * 3.5f;
         propagationRange.transform.localScale = new Vector3(desiredRadius, desiredRadius, desiredRadius);
+    }
+
+    // 한 번 배틀에서 지면 10초간은 연속으로 공격할 수 없도록 보호함
+    public void GiveProtectionPeriod()
+    {
+        protectionPeriod = 10f;
     }
 }

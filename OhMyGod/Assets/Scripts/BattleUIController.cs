@@ -151,7 +151,7 @@ public class BattleUIController : MonoBehaviour
             }
 
             // 진 팀에 10초간 보호기간 부여
-
+            loseTeam.GiveProtectionPeriod();
         });
 
     }
