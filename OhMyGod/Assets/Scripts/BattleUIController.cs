@@ -17,6 +17,7 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private Image rightGodImage;
     [SerializeField] private Slider rightWorshipGauge;
     [SerializeField] private GameoverController gameoverController;
+    [SerializeField] private RankingSystem rankingSystem;
 
     // 현재 숭배 배틀이 진행중인가?
     // 이미 시작되었는데 또 시작하는 상황을 방지함
@@ -153,6 +154,7 @@ public class BattleUIController : MonoBehaviour
                 // 적이었다면 그냥 삭제
                 else
                 {
+                    rankingSystem.RemoveCompetitor(loseTeam);
                     Destroy(loseTeam.gameObject);
                 }
             }
@@ -176,6 +178,9 @@ public class BattleUIController : MonoBehaviour
 
             // 진 팀에 10초간 보호기간 부여
             loseTeam.GiveProtectionPeriod();
+
+            // 신도 수 및 경쟁자 현황에 변화가 생기었으니 랭킹 재계산
+            rankingSystem.RecalculateRank();
         });
 
     }

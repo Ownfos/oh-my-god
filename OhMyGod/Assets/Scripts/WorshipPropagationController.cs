@@ -68,12 +68,19 @@ public class WorshipPropagationController : MonoBehaviour
     private float evilGodDebuffTimer = EVIL_GOD_DEBUFF_CYCLE;
     private float targetCameraLensOrthoSize = 8f;
 
+    // 신도 수 랭킹 관리
+    private RankingSystem rankingSystem;
+
     private void Awake()
     {
         ActiveWorshipers = new();
 
         SpriteRenderer = GetComponent<SpriteRenderer>();
         battleStartUIController = GetComponent<BattleUIController>();
+
+        // 신도 수 랭킹 관리를 위한 레퍼런스.
+        // 자신의 신도 수에 변화가 생길 때마다 랭킹 시스템에 알려준다.
+        rankingSystem = GameObject.FindGameObjectWithTag("RankingSystem").GetComponent<RankingSystem>();
     }
 
     private void Update()
@@ -117,6 +124,9 @@ public class WorshipPropagationController : MonoBehaviour
                         ActiveWorshipers[lastWorshiperIndex].Die();
                         ActiveWorshipers.RemoveAt(lastWorshiperIndex);
                     }
+
+                    // 신도 수가 바뀌었으니 랭킹 재계산
+                    rankingSystem.RecalculateRank();
                 }
             }
         }
@@ -265,6 +275,9 @@ public class WorshipPropagationController : MonoBehaviour
 
                     worshiper.Die();
                 }
+
+                // 신도 수가 바뀌었을 가능성이 있으니 랭킹 재계산
+                rankingSystem.RecalculateRank();
             }
         }
         
