@@ -36,6 +36,9 @@ public class PlayerController : MonoBehaviour
     }
     private DashState dashState = DashState.None;
 
+    // 이동 가능 여부를 제어하는 변수
+    private bool canMove = false;
+
     private void Awake()
     {
         inputActions = new InputActions();
@@ -56,6 +59,8 @@ public class PlayerController : MonoBehaviour
 
     private void ToggleDash(InputAction.CallbackContext context)
     {
+        if (!canMove) return;
+
         // 재충전 중에는 대쉬 처리 x
         if (dashState == DashState.Replenishing)
         {
@@ -111,6 +116,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (!canMove) return;
+
         // 대쉬 게이지
         UpdateDashGauge();
 
@@ -154,6 +161,8 @@ public class PlayerController : MonoBehaviour
 
     private void ChangeDestination(InputAction.CallbackContext context)
     {
+        if (!canMove) return;
+
         var mouseScreenPos = inputActions.Player.MousePos.ReadValue<Vector2>();
         moveDestination = mainCamera.ScreenToWorldPoint(mouseScreenPos);
 
@@ -185,5 +194,10 @@ public class PlayerController : MonoBehaviour
         {
             return moveSpeed;
         }
+    }
+
+    public void SetCanMove(bool value)
+    {
+        canMove = value;
     }
 }

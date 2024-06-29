@@ -11,7 +11,12 @@ public class GameController : MonoBehaviour
     public float numberScaleStart = 0.5f;
     public float numberScaleEnd = 1.5f;
 
-    private PlayerMovement playerMovement;
+    public GameObject dummyEnemyLeft;
+    public GameObject dummyEnemyRight;
+
+    [SerializeField] private List<Transform> spawnPoints; // 유니티 에디터에서 지정할 수 있도록 설정
+
+    private PlayerController playerController;
 
     public GameObject worshiperPrefab; // 개별 NPC(Worshiper) 프리팹
     public GameObject neutralWorshiperGroupPrefab; // 집단(NeutralWorshiperGroup) 프리팹
@@ -25,10 +30,12 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("Game Started");
 
-        playerMovement = FindObjectOfType<PlayerMovement>();
-        if (playerMovement != null)
+        MoveObjectsToRandomPositions();
+
+        playerController = FindObjectOfType<PlayerController>();
+        if (playerController != null)
         {
-            playerMovement.SetCanMove(false); // 입력 비활성화
+            playerController.SetCanMove(false); // 플레이어 이동 고정
         }
 
         if (mapCollider == null || worshiperPrefab == null || neutralWorshiperGroupPrefab == null)
@@ -37,27 +44,79 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        GenerateWorshiperGroups();
         StartCoroutine(StartSequence());
     }
 
-    void GenerateWorshiperGroups()
+    void MoveObjectsToRandomPositions()
     {
-        Vector2 initialPosition = new Vector2(-7, -125); // 첫 구역 시작 위치를 고정
-        Debug.Log($"첫 구역 시작 위치: {initialPosition}");
+        if (spawnPoints.Count < 6)
+        {
+            Debug.LogError("스폰 포인트가 충분하지 않습니다.");
+            return;
+        }
 
-        int numAreasX = Mathf.FloorToInt(180 / areaSizeX); // 맵의 가로 크기 180
-        int numAreasY = Mathf.FloorToInt(120 / areaSizeY); // 맵의 세로 크기 120
+        // 스폰 포인트를 랜덤하게 섞기
+        List<Transform> shuffledSpawnPoints = new List<Transform>(spawnPoints);
+        Shuffle(shuffledSpawnPoints);
+
+        // DummyEnemyLeft 이동
+        dummyEnemyLeft.transform.position = shuffledSpawnPoints[0].position;
+
+        // DummyEnemyRight 이동
+        dummyEnemyRight.transform.position = shuffledSpawnPoints[1].position;
+    }
+
+    void Shuffle<T>(List<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = Random.Range(0, n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+    }
+
+    IEnumerator StartSequence()
+    {
+        // A와 B를 동시 진행
+        Coroutine npcGeneration = StartCoroutine(GenerateWorshiperGroups());
+        Coroutine countdown = StartCoroutine(FadeAndCountdown());
+
+        yield return npcGeneration; // NPC 생성 완료 대기
+        yield return countdown; // 카운트다운 완료 대기
+
+        // 플레이어 이동 허용
+        if (playerController != null)
+        {
+            playerController.SetCanMove(true); // 플레이어 이동 허용
+        }
+
+        StartGame();
+    }
+
+    IEnumerator GenerateWorshiperGroups()
+    {
+        Vector2 minBounds = mapCollider.bounds.min;
+        Vector2 maxBounds = mapCollider.bounds.max;
+        Debug.Log($"맵 경계: {minBounds} - {maxBounds}");
+
+        int numAreasX = Mathf.FloorToInt((maxBounds.x - minBounds.x) / areaSizeX);
+        int numAreasY = Mathf.FloorToInt((maxBounds.y - minBounds.y) / areaSizeY);
 
         for (int areaY = 0; areaY < numAreasY; areaY++)
         {
             for (int areaX = 0; areaX < numAreasX; areaX++)
             {
-                Vector2 areaPosition = new Vector2(initialPosition.x + areaX * areaSizeX, initialPosition.y + areaY * areaSizeY);
+                Vector2 areaPosition = new Vector2(minBounds.x + areaX * areaSizeX, minBounds.y + areaY * areaSizeY);
                 Debug.Log($"구역 {areaY * numAreasX + areaX + 1} 시작 위치: {areaPosition}");
                 GenerateWorshipersInArea(areaPosition);
             }
         }
+
+        yield break;
     }
 
     void GenerateWorshipersInArea(Vector2 areaPosition)
@@ -83,7 +142,9 @@ public class GameController : MonoBehaviour
 
     Vector2 GetRandomPositionInArea(Vector2 areaPosition)
     {
-        return areaPosition + new Vector2(Random.Range(0f, areaSizeX), Random.Range(0f, areaSizeY));
+        float randomX = Random.Range(areaPosition.x, areaPosition.x + areaSizeX);
+        float randomY = Random.Range(areaPosition.y, areaPosition.y + areaSizeY);
+        return new Vector2(randomX, randomY);
     }
 
     List<GameObject> GenerateWorshiperMembers(Vector2 areaPosition, int count, GameObject groupObject)
@@ -96,6 +157,13 @@ public class GameController : MonoBehaviour
             Debug.Log($"NPC 스폰 위치: {spawnPosition}");
             GameObject worshiper = Instantiate(worshiperPrefab, spawnPosition, Quaternion.identity);
             worshiper.transform.SetParent(groupObject.transform); // 그룹 오브젝트의 child로 설정
+
+            // Rigidbody2D의 중력 영향 제거
+            Rigidbody2D rb = worshiper.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.gravityScale = 0; // 중력 영향 제거
+            }
 
             // WorshiperController 스크립트 추가 및 FollowTarget 설정
             WorshiperController worshiperController = worshiper.GetComponent<WorshiperController>();
@@ -111,7 +179,7 @@ public class GameController : MonoBehaviour
         return groupMembers;
     }
 
-    IEnumerator StartSequence()
+    IEnumerator FadeAndCountdown()
     {
         if (fadeController == null)
         {
@@ -129,7 +197,7 @@ public class GameController : MonoBehaviour
         yield return StartCoroutine(fadeController.FadeIn());
 
         Debug.Log("Fade In completed. Starting countdown.");
-        StartCoroutine(StartCountdown());
+        yield return StartCoroutine(StartCountdown());
     }
 
     IEnumerator StartCountdown()
@@ -153,13 +221,6 @@ public class GameController : MonoBehaviour
 
         countdownText.gameObject.SetActive(false);
         Debug.Log("Countdown completed. Starting game.");
-
-        if (playerMovement != null)
-        {
-            playerMovement.SetCanMove(true); // 입력 활성화
-        }
-
-        StartGame();
     }
 
     void StartGame()

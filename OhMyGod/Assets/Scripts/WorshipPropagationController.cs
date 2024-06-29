@@ -15,6 +15,10 @@ public class WorshipPropagationController : MonoBehaviour
     // 포교 범위 트리거가 달린 자식 게임 오브젝트.
     // 신도 수에 따라 반지름이 커진다.
     [SerializeField] private GameObject propagationRange;
+    public GameObject GetPropagationRange()
+    {
+        return propagationRange;
+    }
     [SerializeField] private BattleUIController battleStartUIController;
     public EmojiController EmojiController;
 
