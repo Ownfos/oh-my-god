@@ -158,8 +158,16 @@ public class BattleUIController : MonoBehaviour
             }
             else
             {
+                // 기본적으로는 배틀에서 패배하면 절반의 신도를 빼앗기지만
+                // 이상한 신을 믿는 경우 디버프로 인해 2/3을 빼앗김
                 int previousWorshiperCount = loseTeam.ActiveWorshipers.Count;
-                for (int i = previousWorshiperCount - 1;  i > previousWorshiperCount / 2; --i)
+                int removeIndexLowerbound = previousWorshiperCount / 2;
+                if (loseTeam.SelectedGod == GodType.Weird)
+                {
+                    removeIndexLowerbound = previousWorshiperCount * 2 / 3;
+                }
+
+                for (int i = previousWorshiperCount - 1;  i > removeIndexLowerbound; --i)
                 {
                     winTeam.AddWorshiper(loseTeam.ActiveWorshipers[i]);
                     loseTeam.ActiveWorshipers.RemoveAt(i);
