@@ -36,10 +36,10 @@ public class TimeoutController : MonoBehaviour
     {
         if (isClockRunning)
         {
-            remainingTime -= Time.deltaTime;
+            remainingTime = Mathf.Max(remainingTime - Time.deltaTime, 0f);
             UpdateTimerUI();
 
-            if (remainingTime < 0f)
+            if (Mathf.Approximately(remainingTime, 0f))
             {
                 OnTimeout.Invoke();
                 isClockRunning = false;

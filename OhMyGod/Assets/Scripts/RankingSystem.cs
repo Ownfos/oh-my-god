@@ -81,7 +81,7 @@ public class RankingSystem : MonoBehaviour
 
     }
 
-    private int FindPlayerRank()
+    public int FindPlayerRank()
     {
         for (int i = 0; i < competitors.Count; ++i)
         {
