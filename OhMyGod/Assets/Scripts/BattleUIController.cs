@@ -127,6 +127,10 @@ public class BattleUIController : MonoBehaviour
         rightBattleUI.DOMoveX(Screen.width * 1.5f, 1f).SetEase(Ease.OutSine).OnComplete(()=>{
             isBattleActive = false;
 
+            // 이모지 띄우기
+            loseTeam.EmojiController.PopupEmoji(EmojiType.Sad);
+            winTeam.EmojiController.PopupEmoji(EmojiType.Celebrate);
+
             // 플레이어 입력 허용하기
             GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().enabled = true;
 

@@ -91,6 +91,7 @@ public class GameController : MonoBehaviour
                     worshiperController = worshiper.AddComponent<WorshiperController>();
                 }
                 worshiperController.FollowTarget = groupObject;
+                worshiper.transform.parent = groupObject.transform;
                 groupMembers.Add(worshiper);
             }
 

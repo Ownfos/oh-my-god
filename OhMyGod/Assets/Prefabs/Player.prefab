@@ -35,6 +35,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1304957006086272342}
+  - {fileID: 109636574897116260}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7346704012105226235
@@ -118,7 +119,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d911ce07698bcf348b2a1e42233cd980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GodSprite: {fileID: 0}
+  WorshiperSprite: {fileID: 0}
   propagationRange: {fileID: 6885266551631969429}
+  battleStartUIController: {fileID: 0}
+  emojiController: {fileID: 1716898379732909865}
 --- !u!50 &2670906108032369855
 Rigidbody2D:
   serializedVersion: 4
@@ -301,3 +306,76 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!1001 &4287678132898250597
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1930376903532689183}
+    m_Modifications:
+    - target: {fileID: 4180859331731663617, guid: e264727122db31148acc3c644a4f8ae8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4180859331731663617, guid: e264727122db31148acc3c644a4f8ae8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4180859331731663617, guid: e264727122db31148acc3c644a4f8ae8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4180859331731663617, guid: e264727122db31148acc3c644a4f8ae8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4180859331731663617, guid: e264727122db31148acc3c644a4f8ae8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4180859331731663617, guid: e264727122db31148acc3c644a4f8ae8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4180859331731663617, guid: e264727122db31148acc3c644a4f8ae8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4180859331731663617, guid: e264727122db31148acc3c644a4f8ae8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4180859331731663617, guid: e264727122db31148acc3c644a4f8ae8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4180859331731663617, guid: e264727122db31148acc3c644a4f8ae8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7977383707484089870, guid: e264727122db31148acc3c644a4f8ae8, type: 3}
+      propertyPath: m_Name
+      value: Emoji
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e264727122db31148acc3c644a4f8ae8, type: 3}
+--- !u!4 &109636574897116260 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4180859331731663617, guid: e264727122db31148acc3c644a4f8ae8, type: 3}
+  m_PrefabInstance: {fileID: 4287678132898250597}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1716898379732909865 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3193968517039800396, guid: e264727122db31148acc3c644a4f8ae8, type: 3}
+  m_PrefabInstance: {fileID: 4287678132898250597}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 713ab264e956b034ca911dd3fee664e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

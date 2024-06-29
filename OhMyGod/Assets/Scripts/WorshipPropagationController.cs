@@ -16,6 +16,7 @@ public class WorshipPropagationController : MonoBehaviour
     // 신도 수에 따라 반지름이 커진다.
     [SerializeField] private GameObject propagationRange;
     [SerializeField] private BattleUIController battleStartUIController;
+    public EmojiController EmojiController;
 
     public SpriteRenderer SpriteRenderer {get; private set;}
     public List<WorshiperController> ActiveWorshipers {get; private set;}
@@ -100,6 +101,8 @@ public class WorshipPropagationController : MonoBehaviour
         // TriggerEnter 이벤트가 배틀 시작할 때 여러 번 발동할 수 있으므로 active가 아닌 경우에만 배틀을 새로 시작함...
         if (battleStartUIController != null && !battleStartUIController.isBattleActive)
         {
+            EmojiController.PopupEmoji(EmojiType.Surprise);
+            enemyGroupController.EmojiController.PopupEmoji(EmojiType.Surprise);
             battleStartUIController.PlayBattleStartUI(this, enemyGroupController);
         }
     }
@@ -194,6 +197,8 @@ public class WorshipPropagationController : MonoBehaviour
         // 포교 대상의 종교에 맞게 스프라이트 교체하기
         // TODO: 스프라이트가 아니라 애니메이터 교체가 필요할 수도 있음
         worshiper.GetComponent<SpriteRenderer>().sprite = SpriteRenderer.sprite;
+
+        worshiper.GetComponentInChildren<EmojiController>().PopupEmoji(EmojiType.Happy);
 
         // 신도 수에 비례해 포교범위 조정 (하나 들어갈 때마다 3.5정도 크기 필요)
         // ex) 9명 정도는 3.5짜리 원 안에 들어감
