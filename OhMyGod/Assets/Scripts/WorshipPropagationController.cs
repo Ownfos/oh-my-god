@@ -122,6 +122,14 @@ public class WorshipPropagationController : MonoBehaviour
     public void AddWorshiper(WorshiperController worshiper)
     {
         ActiveWorshipers.Add(worshiper);
+        worshiper.FollowTarget = gameObject;
+
+        // 그룹으로 묶고 있던 오브젝트 탈출
+        worshiper.gameObject.transform.parent = null;
+
+        // 포교 대상의 종교에 맞게 스프라이트 교체하기
+        // TODO: 스프라이트가 아니라 애니메이터 교체가 필요할 수도 있음
+        worshiper.GetComponent<SpriteRenderer>().sprite = SpriteRenderer.sprite;
 
         // 신도 수에 비례해 포교범위 조정 (하나 들어갈 때마다 3.5정도 크기 필요)
         // ex) 9명 정도는 3.5짜리 원 안에 들어감

@@ -12,7 +12,7 @@ public class BattleStartUIController : MonoBehaviour
 
     private void Start()
     {
-        PlayBattleStartUI(); // 테스트 목적으로 바로 재생
+        // PlayBattleStartUI(); // 테스트 목적으로 바로 재생
     }
 
     public void PlayBattleStartUI()
