@@ -139,6 +139,8 @@ public class BattleUIController : MonoBehaviour
                     loseTeam.ActiveWorshipers[i].transform.parent = null;
                     loseTeam.ActiveWorshipers[i].Die();
                 }
+
+                // TODO: 플레이어가 죽는 경우 게임오버 처리하기
                 Destroy(loseTeam.gameObject);
             }
             else
