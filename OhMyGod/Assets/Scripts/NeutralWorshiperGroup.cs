@@ -3,10 +3,14 @@ using System.Collections.Generic;
 
 public class NeutralWorshiperGroup : MonoBehaviour
 {
+
     private List<WorshiperController> worshipers = new List<WorshiperController>();
     public int NumWorshipers { get => worshipers.Count; }
 
     public float PropagationDuration { get; set; } = 0;
+
+    private AudioSource lureStartSound;
+
 
     public void InitializeGroup(List<GameObject> worshiperObjects)
     {
@@ -30,6 +34,13 @@ public class NeutralWorshiperGroup : MonoBehaviour
         // 내 gameobject의 자식으로 설정된 모든 worshiper 오브젝트를 확인하고 목록으로 정리해둔다.
         // 나중에 민간인 집단 포교 처리에 유용하게 사용될 것...
         worshipers.AddRange(GetComponentsInChildren<WorshiperController>());
+        lureStartSound = GetComponent<AudioSource>();
+    }
+
+    public void PlayLureStartSoundEffect()
+    {
+        lureStartSound.Stop();
+        lureStartSound.Play();
     }
 
     // PlayerController에서 충분한 포교 시간을 확보한 경우 호출하는 함수.

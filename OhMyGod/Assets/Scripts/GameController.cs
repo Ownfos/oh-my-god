@@ -32,6 +32,8 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("Game Started");
 
+        BGMController.Instance.SwitchToMainGameBGM();
+
         MoveObjectsToRandomPositions();
 
         playerController = FindObjectOfType<PlayerController>();

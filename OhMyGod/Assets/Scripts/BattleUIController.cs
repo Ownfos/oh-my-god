@@ -18,6 +18,8 @@ public class BattleUIController : MonoBehaviour
     [SerializeField] private Slider rightWorshipGauge;
     [SerializeField] private GameoverController gameoverController;
     [SerializeField] private RankingSystem rankingSystem;
+    [SerializeField] private ArrowButtonMinigame arrowButtonMinigame;
+    [SerializeField] private AudioSource battleBeginSound;
 
     // 현재 숭배 배틀이 진행중인가?
     // 이미 시작되었는데 또 시작하는 상황을 방지함
@@ -26,12 +28,20 @@ public class BattleUIController : MonoBehaviour
     private WorshipPropagationController leftTeam;
     private WorshipPropagationController rightTeam;
 
+    // 다음 미니게임이 팝업되기까지 기다려야하는 시간
+    private float arrowButtonMinigameCooltime = 0;
+
     public void PlayBattleStartUI(WorshipPropagationController leftTeam, WorshipPropagationController rightTeam)
     {
         Debug.Log("배틀 시작");
         isBattleActive = true;
         this.leftTeam = leftTeam;
         this.rightTeam = rightTeam;
+        RandomizeMinigameCooltime();
+
+        // 땡땡땡 하는 효과음
+        battleBeginSound.Stop();
+        battleBeginSound.Play();
 
         // 플레이어 입력 막기
         GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().enabled = false;
@@ -58,6 +68,9 @@ public class BattleUIController : MonoBehaviour
         // 0. 2초간 대기 (느낌표 등 말풍선 표시??)
         float dummy = 1f;
         DOTween.To(() => dummy, (value) => {dummy = value;}, 1f, 2f).OnComplete(()=>{
+            // 기본 브금 잠시 멈추고 전투 브금 시작
+            BGMController.Instance.StartBattleBGM();
+
             // 1. 커튼이 샥 하고 화면을 가림
             curtain.DOMoveX(Screen.width *0.5f, 1f).SetEase(Ease.OutSine).OnComplete(() => {
                 // 2. 배경이 검은색으로 바뀜
@@ -82,12 +95,25 @@ public class BattleUIController : MonoBehaviour
         });
     }
 
+    private void RandomizeMinigameCooltime()
+    {
+        arrowButtonMinigameCooltime = UnityEngine.Random.Range(4f, 7f);
+    }
+
     private void Update()
     {
         if (isMainBattleStarted)
         {
             IncreaseWorshipGauge(leftTeam, leftWorshipGauge);
             IncreaseWorshipGauge(rightTeam, rightWorshipGauge);
+
+            // 미니게임 쿨타임 차면 방향키 미니게임 시작하기
+            arrowButtonMinigameCooltime -= Time.deltaTime;
+            if (arrowButtonMinigameCooltime < 0f && !arrowButtonMinigame.IsMinigameActive)
+            {
+                RandomizeMinigameCooltime();
+                arrowButtonMinigame.StartNewMinigame();
+            }
 
             if (leftWorshipGauge.value >= 1f)
             {
@@ -121,6 +147,8 @@ public class BattleUIController : MonoBehaviour
     // 배틀을 시작하기 전의 상태로 복원한다.
     public void EndBattle(WorshipPropagationController winTeam, WorshipPropagationController loseTeam)
     {
+        BGMController.Instance.ResumeMainGameBGM();
+
         isMainBattleStarted = false;
         darkBackground.gameObject.SetActive(false);
         curtain.position = new Vector2(-Screen.width * 0.5f, Screen.height * 0.5f);

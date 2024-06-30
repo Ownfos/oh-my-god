@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
@@ -32,6 +30,8 @@ public class ArrowButtonMinigame : MonoBehaviour
     public bool IsArrow4Correct { get => arrow4.color == correctColor; }
     public bool IsAllCorrect { get => IsArrow1Correct && IsArrow2Correct && IsArrow3Correct && IsArrow4Correct; }
 
+    public bool IsMinigameActive { get => nextArrowIndex >= 0 && nextArrowIndex <= 3; }
+
     // 0~3 사이의 값인 경우 arrowN의 위치를 예측하는 상황임.
     // 반대로 그 이외의 범위인 경우는 미니게임을 진행하지 않는 상황.
     private int nextArrowIndex = 4;
@@ -59,7 +59,6 @@ public class ArrowButtonMinigame : MonoBehaviour
         SpriteRenderer arrowRenderer = GetNextArrow();
         if (arrowRenderer == null)
         {
-            StartNewMinigame();
             return; // 4개의 화살표를 맞추는 상태가 아님...
         }
 
@@ -109,7 +108,7 @@ public class ArrowButtonMinigame : MonoBehaviour
     void Start()
     {
         // 테스트 용도로 바로 게임 시작함!
-        StartNewMinigame();
+        // StartNewMinigame();
     }
 
     public void StartNewMinigame()

@@ -27,6 +27,7 @@ public class WorshipPropagationController : MonoBehaviour
     // 신도 수에 비례해서 카메라의 시야를 넓힐 수 있다.
     [SerializeField] private GameObject propagationRange;
     [SerializeField] private CinemachineVirtualCamera cinemachineCamera;
+    [SerializeField] private AudioSource lureSuccessSound;
     public GameObject GetPropagationRange()
     {
         return propagationRange;
@@ -74,6 +75,7 @@ public class WorshipPropagationController : MonoBehaviour
 
     // 신도 수 랭킹 관리
     private RankingSystem rankingSystem;
+
 
     private void Awake()
     {
@@ -157,6 +159,12 @@ public class WorshipPropagationController : MonoBehaviour
 
             // 이 집단 소속의 중립 npc를 한 명 더 만났다고 기록
             groupEncounterCount[group]++;
+
+            // 집단 별 첫 npc의 경우 효과음 재생
+            if (groupEncounterCount[group] == 1)
+            {
+                group.PlayLureStartSoundEffect();
+            }
         }
     }
 
@@ -267,7 +275,6 @@ public class WorshipPropagationController : MonoBehaviour
                     numSuccess += numExtraSuccess;
                 }
 
-
                 // 포교 성공한 인원 수만큼 스킬 게이지 회복
                 SkillGauge = Math.Clamp(SkillGauge + numSuccess, 0, MAX_SKILL_GUAGE);
 
@@ -278,6 +285,13 @@ public class WorshipPropagationController : MonoBehaviour
                     ActiveWorshipers.Remove(worshiper);
 
                     worshiper.Die();
+                }
+
+                // 한 명이라도 성공한 경우 효과음 재생
+                if (numSuccess > 0)
+                {
+                    lureSuccessSound.Stop();
+                    lureSuccessSound.Play();
                 }
 
                 // 신도 수가 바뀌었을 가능성이 있으니 랭킹 재계산

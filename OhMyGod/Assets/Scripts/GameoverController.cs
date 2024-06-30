@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class GameoverController : MonoBehaviour
 {
+    [SerializeField] private AudioSource gameoverSound;
     [SerializeField] private RectTransform badEndingUI;
     [SerializeField] private RectTransform goodEndingUI;
     [SerializeField] private RankingSystem rankingSystem;
@@ -16,6 +17,9 @@ public class GameoverController : MonoBehaviour
     // 배틀에서 패배해 제한시간이 다 지나지 않았는데 게임오버된 경우
     public void ShowBadEnding()
     {
+        gameoverSound.Stop();
+        gameoverSound.Play();
+        
         BlockPlayerInput();
         badEndingUI.DOMoveY(Screen.height / 2f, 1f).SetEase(Ease.OutBounce);
     }
@@ -35,6 +39,8 @@ public class GameoverController : MonoBehaviour
     // 미션 제한 시간이 다 되어서 게임이 끝난 경우 TimeoutController의 이벤트에 의해 호출됨
     public void OnTimeout()
     {
+        BGMController.Instance.SwitchToGameClearBGM();
+
         // 1위로 마무리
         if (rankingSystem.FindPlayerRank() == 0)
         {
