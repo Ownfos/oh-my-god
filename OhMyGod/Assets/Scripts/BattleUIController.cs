@@ -98,19 +98,29 @@ public class BattleUIController : MonoBehaviour
         });
     }
 
+    [SerializeField] private float buffLength = 0.4f;
+    [SerializeField] private float minMinigameDelay = 0.5f;
+    [SerializeField] private float maxMinigameDelay = 1f;
+
+    // 화살표 미니게임 성공했을 때 상대적으ㅗㄹ 얼마나 빨리 차는가?
+    [SerializeField] private float playerTeamGuageSpeedup = 10f;
+
+    // 적의 게이지가 기본적으로 플레이어보다 얼마나 빨리 차는가?
+    [SerializeField] private float enemyTeamGuageSpeedup = 2f;
+
     public void OnMinigameComplete()
     {
         bool successful = arrowButtonMinigame.IsAllCorrect;
         Debug.Log($"미니게임 결과: {successful}");
         if (successful)
         {
-            minigameBuffDuration = 0.5f;
+            minigameBuffDuration = buffLength;
         }
     }
 
     private void RandomizeMinigameCooltime()
     {
-        arrowButtonMinigameCooltime = UnityEngine.Random.Range(4f, 7f);
+        arrowButtonMinigameCooltime = UnityEngine.Random.Range(minMinigameDelay, maxMinigameDelay);
     }
 
     private void Update()
@@ -160,7 +170,11 @@ public class BattleUIController : MonoBehaviour
         // 주인공(왼쪽 팀)에게 미니게임 성공에 따른 게이지 상승 속도 버프를 부여
         if (minigameBuffDuration > 0f && propagationController == leftTeam)
         {
-            increaseSpeed *= 10f;
+            increaseSpeed *= playerTeamGuageSpeedup;
+        }
+        else if (propagationController == rightTeam)
+        {
+            increaseSpeed *= enemyTeamGuageSpeedup;
         }
 
         slider.value += increaseSpeed * Time.deltaTime;

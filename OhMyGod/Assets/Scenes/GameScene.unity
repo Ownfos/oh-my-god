@@ -1190,7 +1190,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aadef516f705c2342ab113381b6e4bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maximumPlaytimeInSecs: 500
+  maximumPlaytimeInSecs: 432.5
   remainingTimeText: {fileID: 391197613}
   OnTimeout:
     m_PersistentCalls:
