@@ -210,4 +210,154 @@ public class WorshipPropagationController : MonoBehaviour
         // 중립 npc 집단(1인 이상)의 모든 인원이 포교 범위에서 나갔는지 체크.
         // 두 번째 조건은 내가 포교중이 아니라면 propagationTargetGroups에도
         // group이 존재하지 않으므로 없는 엔트리를 제거하는 버그를 막아준다.
-        var group = other.game
+        var group = other.gameObject.GetComponentInParent<NeutralWorshiperGroup>();
+        if (group != null && group.currentPropagation == this)
+        {
+            // 포교 범위에서 벗어나면 말랑말랑 모션 끝, 정상 scale 복구
+            other.transform.DOKill();
+            other.transform.localScale = Vector3.one;
+
+            groupEncounterCount[group]--;
+            if (groupEncounterCount[group] == 0)
+            {
+                propagationTargetGroups.Remove(group);
+                group.PropagationDuration = 0f;
+
+                // 이제 나는 포교 멈췄다고 마킹.
+                // 다른 세력은 이 값이 null이어야만 포교를 시작할 수 있다!
+                group.currentPropagation = null;
+            }
+        }
+    }
+
+    // 트리거 범위에 들어온 중립 npc들의 포교 타이머 관리 및 포교 성공 판정 확률 굴리기
+    private void UpdatePropagationTime()
+    {
+        List<NeutralWorshiperGroup> groupsToDelete = new();
+        foreach (NeutralWorshiperGroup group in propagationTargetGroups)
+        {
+            // 얼마나 오랜 시간 포교에 노출되었는가?
+            group.PropagationDuration += Time.deltaTime;
+
+            float finalRequiredTime = REQUIRED_PROPAGATION_TIME;
+            // 악한 신을 믿는 경우 포교에 필요한 시간이 20% 감소함
+            if (SelectedGod == GodType.Evil)
+            {
+                finalRequiredTime *= 0.8f;
+            }
+            // 선한 신을 믿는 경우 10초 이내에 포교에 실패한 기록이 있다면 소요 시간이 50% 증가함
+            else if (SelectedGod == GodType.Good && propagationSuccessRateDebuffDuration > 0f)
+            {
+                finalRequiredTime *= 1.5f;
+            }
+
+            if (group.PropagationDuration > finalRequiredTime)
+            {
+                // 포교 성공 판정을 굴린 npc들은 더이상 관리하지 않음 (신도가 되거나 소멸하거나)
+                groupsToDelete.Add(group);
+
+                // 이번 그룹에 속한 중립 NPC의 수
+                int maxNumSuccess = group.NumWorshipers;
+
+                // 착한 신을 믿는 경우 포교 성공 확률이 10%p 증가함
+                float finalSuccessRate = SelectedGod == GodType.Good ? PROPAGATION_SUCCESS_RATE + 0.1f : PROPAGATION_SUCCESS_RATE;
+                int numSuccess = group.PerformPropagation(finalSuccessRate, this);
+
+                // 선한 신을 믿는 경우 한 명이라도 포교에 실패하면 10초간 포교 시간 디버프 부여
+                if (SelectedGod == GodType.Good && numSuccess != maxNumSuccess)
+                {
+                    propagationSuccessRateDebuffDuration = 10f;
+                }
+
+                // 이상한 신을 믿는 경우 30% 확률로 도플갱어 획득
+                if (SelectedGod == GodType.Weird)
+                {
+                    int numExtraSuccess = 0;
+                    for (int i = 0; i < numSuccess; ++i)
+                    {
+                        if (UnityEngine.Random.Range(0f, 1f) < WEIRED_GOD_BONUS_PROPAGATION_RATE)
+                        {
+                            numExtraSuccess++;
+
+                            // 마지막 신도 복제
+                            WorshiperController worshiper = ActiveWorshipers[ActiveWorshipers.Count - 1];
+                            GameObject bonusWorshiper = Instantiate(worshiper.gameObject);
+                            AddWorshiper(bonusWorshiper.GetComponent<WorshiperController>());
+                        }
+                    }
+                    numSuccess += numExtraSuccess;
+                }
+
+                // 포교 성공한 인원 수만큼 스킬 게이지 회복
+                SkillGauge = Math.Clamp(SkillGauge + numSuccess, 0, MAX_SKILL_GUAGE);
+
+                // 집단 포교에 단 한명도 성공하지 못한 경우 패널티로 신도수-1 부여
+                if (group.NumWorshipers > 1 && numSuccess == 0)
+                {
+                    WorshiperController worshiper = ActiveWorshipers[ActiveWorshipers.Count - 1];
+                    ActiveWorshipers.Remove(worshiper);
+
+                    worshiper.Die();
+                }
+
+                // 신도 수가 바뀌었을 가능성이 있으니 랭킹 재계산
+                rankingSystem.RecalculateRank();
+            }
+        }
+
+        foreach (var group in groupsToDelete)
+        {
+            // 일단 null reference를 피하기 위해 포교 대상 리스트에서 삭제하고
+            propagationTargetGroups.Remove(group);
+
+            // 나의 신도가 되지 않은 오브젝트를 포함한 중립 npc 무리의 부모 오브젝트를 없애버림.
+            // 난 죽음을 택하겠다!!!
+            foreach (var worshiper in group.gameObject.GetComponentsInChildren<WorshiperController>())
+            {
+                // 부모로부터 detach해서 사망 모션 출력하고 삭제될 수 있도록 만듦
+                worshiper.transform.parent = null;
+                worshiper.Die();
+            }
+
+            // 이제 자식이 없는 빈 부모 오브젝트는 바로 삭제
+            Destroy(group.gameObject);
+        }
+    }
+
+    // 중립 npc의 포교에 성공했을 경우 호출되는 함수.
+    // 내 신도 목록을 갱신해서 포교 범위나 카메라 뷰 줌아웃 등에 사용한다.
+    public void AddWorshiper(WorshiperController worshiper)
+    {
+        if (worshiper == null || ActiveWorshipers.Contains(worshiper)) return;
+
+        ActiveWorshipers.Add(worshiper);
+        worshiper.FollowTarget = gameObject;
+
+        // 그룹으로 묶고 있던 오브젝트 탈출
+        worshiper.gameObject.transform.parent = null;
+
+        // 포교 대상의 종교에 맞게 스프라이트 교체하기
+        // TODO: 스프라이트가 아니라 애니메이터 교체가 필요할 수도 있음
+        worshiper.GetComponent<SpriteRenderer>().sprite = SpriteRenderer.sprite;
+
+        worshiper.GetComponentInChildren<EmojiController>().PopupEmoji(EmojiType.Happy);
+
+        // 본인을 포함한 신도 수에 비례해 포교범위 조정 (하나 들어갈 때마다 3.5정도 크기 필요)
+        // ex) 9명 정도는 3.5짜리 원 안에 들어감
+        // ex) 25명 정도는 7짜리 원 안에 들어감
+        float desiredRadius = Mathf.Ceil(Mathf.Sqrt(ActiveWorshipers.Count + 1)) * 2.8f;
+        propagationRange.transform.localScale = new Vector3(desiredRadius, desiredRadius, desiredRadius);
+
+        // 플레이어인 경우 시야 범위도 조금씩 넓어지게 만듦
+        if (cinemachineCamera != null)
+        {
+            targetCameraLensOrthoSize = 6f + desiredRadius * 0.35f;
+        }
+    }
+
+    // 한 번 배틀에서 지면 10초간은 연속으로 공격할 수 없도록 보호함
+    public void GiveProtectionPeriod()
+    {
+        protectionPeriod = 10f;
+    }
+}

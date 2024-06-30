@@ -18,50 +18,10 @@ public class AutoBattleController : MonoBehaviour
     private void Start()
     {
         InitializeTeams();
-    }
-
-    private void InitializeTeams()
-    {
-        if (dummyEnemyLeft != null)
-        {
-            leftTeam = dummyEnemyLeft.GetComponent<WorshipPropagationController>();
-            if (leftTeam == null)
-            {
-                Debug.LogError("dummyEnemyLeft does not have a WorshipPropagationController component.");
-            }
-        }
-        else
-        {
-            Debug.LogError("dummyEnemyLeft is not assigned.");
-        }
-
-        if (dummyEnemyRight != null)
-        {
-            rightTeam = dummyEnemyRight.GetComponent<WorshipPropagationController>();
-            if (rightTeam == null)
-            {
-                Debug.LogError("dummyEnemyRight does not have a WorshipPropagationController component.");
-            }
-        }
-        else
-        {
-            Debug.LogError("dummyEnemyRight is not assigned.");
-        }
 
         // Ensure the propagation ranges have triggers enabled and correct tags
-        var leftCollider = dummyEnemyLeft.transform.Find("Circle")?.GetComponent<Collider2D>();
-        var rightCollider = dummyEnemyRight.transform.Find("Circle")?.GetComponent<Collider2D>();
-
-        if (leftCollider != null)
-        {
-            leftCollider.isTrigger = true;
-            leftCollider.gameObject.tag = "PropagationRange";
-        }
-        if (rightCollider != null)
-        {
-            rightCollider.isTrigger = true;
-            rightCollider.gameObject.tag = "PropagationRange";
-        }
+        SetPropagationRangeSettings(dummyEnemyLeft);
+        SetPropagationRangeSettings(dummyEnemyRight);
     }
 
     private void Update()
@@ -76,11 +36,9 @@ public class AutoBattleController : MonoBehaviour
     {
         if (isAutoBattleActive) return;
 
-        // Ensure leftTeam and rightTeam are not null
         if (leftTeam == null || rightTeam == null)
         {
             Debug.LogError("One of the teams is null during OnTriggerEnter2D.");
-            InitializeTeams(); // Attempt to reinitialize the teams
             return;
         }
 
@@ -149,8 +107,54 @@ public class AutoBattleController : MonoBehaviour
             }
         }
 
+        // 신도 수가 3명 이하인 경우 패배한 팀의 부모 오브젝트 삭제
+        if (loser.ActiveWorshipers.Count <= 3)
+        {
+            Debug.Log($"Loser team {loser.name} has 3 or fewer worshipers. Destroying the parent object.");
+            Destroy(loser.gameObject);
+        }
+
         // 보호 기간 부여
         loser.GiveProtectionPeriod();
         Debug.Log($"Protection period given to loser: {loser.name}");
+    }
+
+    private void InitializeTeams()
+    {
+        if (dummyEnemyLeft != null)
+        {
+            leftTeam = dummyEnemyLeft.GetComponent<WorshipPropagationController>();
+            if (leftTeam == null)
+            {
+                Debug.LogError("dummyEnemyLeft does not have a WorshipPropagationController component.");
+            }
+        }
+        else
+        {
+            Debug.LogError("dummyEnemyLeft is not assigned.");
+        }
+
+        if (dummyEnemyRight != null)
+        {
+            rightTeam = dummyEnemyRight.GetComponent<WorshipPropagationController>();
+            if (rightTeam == null)
+            {
+                Debug.LogError("dummyEnemyRight does not have a WorshipPropagationController component.");
+            }
+        }
+        else
+        {
+            Debug.LogError("dummyEnemyRight is not assigned.");
+        }
+    }
+
+    private void SetPropagationRangeSettings(GameObject enemy)
+    {
+        var collider = enemy.transform.Find("Circle")?.GetComponent<Collider2D>();
+        if (collider != null)
+        {
+            collider.isTrigger = true;
+            collider.gameObject.tag = "PropagationRange";
+        }
     }
 }
