@@ -8,12 +8,12 @@ using UnityEngine.UI;
 public class BattleUIController : MonoBehaviour
 {
     [SerializeField] private RectTransform curtain; // 공연 시작 느낌으로 샥 나타났다가 사라질 커튼 느낌의 배경
-    [SerializeField] private RectTransform darkBackground; // 일반 맵을 가려줄 검은 배경
+    [SerializeField] private RectTransform skyBackground; // 일반 맵을 가려줄 배경
     [SerializeField] private Text battleIntroText; // "당신의 우상에게 숭배하세요" 문구
-    [SerializeField] private RectTransform leftBattleUI; // 좌측 진영 UI
+    [SerializeField] private RectTransform upperBattleUI; // 신전 천장
     [SerializeField] private Image leftGodImage;
     [SerializeField] private Slider leftWorshipGauge;
-    [SerializeField] private RectTransform rightBattleUI; // 우측 진영 UI
+    [SerializeField] private RectTransform lowerBattleUI; // 신전 본체를 비롯한 각종 핵심 UI
     [SerializeField] private Image rightGodImage;
     [SerializeField] private Slider rightWorshipGauge;
     [SerializeField] private GameoverController gameoverController;
@@ -30,6 +30,9 @@ public class BattleUIController : MonoBehaviour
 
     // 다음 미니게임이 팝업되기까지 기다려야하는 시간
     private float arrowButtonMinigameCooltime = 0;
+
+    // 미니게임에 성공해서 게이지 상승 속도 버프를 받을 잔여 시간
+    private float minigameBuffDuration = 0f;
 
     public void PlayBattleStartUI(WorshipPropagationController leftTeam, WorshipPropagationController rightTeam)
     {
@@ -74,7 +77,7 @@ public class BattleUIController : MonoBehaviour
             // 1. 커튼이 샥 하고 화면을 가림
             curtain.DOMoveX(Screen.width *0.5f, 1f).SetEase(Ease.OutSine).OnComplete(() => {
                 // 2. 배경이 검은색으로 바뀜
-                darkBackground.gameObject.SetActive(true);
+                skyBackground.gameObject.SetActive(true);
 
                 // 3. "당신의 우상에게 숭배하세요" 문구 표시
                 battleIntroText.transform.DOScale(1f, 2f).SetEase(Ease.OutBounce).OnComplete(() => {
@@ -83,8 +86,8 @@ public class BattleUIController : MonoBehaviour
                         // 5. 커튼 반대편으로 샥 하고 사라지며
                         curtain.transform.DOMoveX(Screen.width * 1.5f, 1f).SetEase(Ease.OutSine).OnComplete(() => {
                             // 6. 양쪽에서 숭배 배틀 UI가 가운데로 쾅 하며 등장
-                            leftBattleUI.DOMoveX(0f, 1f).SetEase(Ease.OutBounce);
-                            rightBattleUI.DOMoveX(Screen.width, 1f).SetEase(Ease.OutBounce).OnComplete(() => {
+                            upperBattleUI.DOMoveY(Screen.height / 2f, 1f).SetEase(Ease.OutBounce);
+                            lowerBattleUI.DOMoveY(Screen.height / 2f, 1f).SetEase(Ease.OutBounce).OnComplete(() => {
                                 // 조작 가능한 숭배 배틀 시작
                                 isMainBattleStarted = true;
                             });
@@ -93,6 +96,16 @@ public class BattleUIController : MonoBehaviour
                 });
             });
         });
+    }
+
+    public void OnMinigameComplete()
+    {
+        bool successful = arrowButtonMinigame.IsAllCorrect;
+        Debug.Log($"미니게임 결과: {successful}");
+        if (successful)
+        {
+            minigameBuffDuration = 0.5f;
+        }
     }
 
     private void RandomizeMinigameCooltime()
@@ -108,11 +121,15 @@ public class BattleUIController : MonoBehaviour
             IncreaseWorshipGauge(rightTeam, rightWorshipGauge);
 
             // 미니게임 쿨타임 차면 방향키 미니게임 시작하기
-            arrowButtonMinigameCooltime -= Time.deltaTime;
-            if (arrowButtonMinigameCooltime < 0f && !arrowButtonMinigame.IsMinigameActive)
+            minigameBuffDuration -= Time.deltaTime;
+            if (!arrowButtonMinigame.IsMinigameActive)
             {
-                RandomizeMinigameCooltime();
-                arrowButtonMinigame.StartNewMinigame();
+                arrowButtonMinigameCooltime -= Time.deltaTime;
+                if (arrowButtonMinigameCooltime < 0f)
+                {
+                    RandomizeMinigameCooltime();
+                    arrowButtonMinigame.StartNewMinigame();
+                }
             }
 
             if (leftWorshipGauge.value >= 1f)
@@ -140,6 +157,12 @@ public class BattleUIController : MonoBehaviour
 
         increaseSpeed *= 2f / 100f;
 
+        // 주인공(왼쪽 팀)에게 미니게임 성공에 따른 게이지 상승 속도 버프를 부여
+        if (minigameBuffDuration > 0f && propagationController == leftTeam)
+        {
+            increaseSpeed *= 10f;
+        }
+
         slider.value += increaseSpeed * Time.deltaTime;
     }
 
@@ -150,10 +173,10 @@ public class BattleUIController : MonoBehaviour
         BGMController.Instance.ResumeMainGameBGM();
 
         isMainBattleStarted = false;
-        darkBackground.gameObject.SetActive(false);
+        skyBackground.gameObject.SetActive(false);
         curtain.position = new Vector2(-Screen.width * 0.5f, Screen.height * 0.5f);
-        leftBattleUI.DOMoveX(-Screen.width * 0.5f, 1f).SetEase(Ease.OutSine);
-        rightBattleUI.DOMoveX(Screen.width * 1.5f, 1f).SetEase(Ease.OutSine).OnComplete(()=>{
+        upperBattleUI.DOMoveY(Screen.height * 1.5f, 1f).SetEase(Ease.OutSine);
+        lowerBattleUI.DOMoveY(Screen.width * -0.5f, 1f).SetEase(Ease.OutSine).OnComplete(()=>{
             isBattleActive = false;
 
             // 이모지 띄우기

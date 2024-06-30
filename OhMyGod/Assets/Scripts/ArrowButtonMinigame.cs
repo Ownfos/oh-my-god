@@ -1,6 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class ArrowButtonMinigame : MonoBehaviour
 {
@@ -16,12 +17,12 @@ public class ArrowButtonMinigame : MonoBehaviour
     [SerializeField] private Color wrongColor;
 
     [Header("Objects to Control")]
-    [SerializeField] private SpriteRenderer arrow1;
-    [SerializeField] private SpriteRenderer arrow2;
-    [SerializeField] private SpriteRenderer arrow3;
-    [SerializeField] private SpriteRenderer arrow4;
+    [SerializeField] private Image arrow1;
+    [SerializeField] private Image arrow2;
+    [SerializeField] private Image arrow3;
+    [SerializeField] private Image arrow4;
 
-    public UnityEvent<bool> OnComplete; // 미니게임 성공 여부를 이벤트로 알려줌
+    public UnityEvent OnComplete; // 미니게임 성공 여부를 이벤트로 알려줌
 
     // 각 화살표의 정답 여부는 곧 색과 직결됨
     public bool IsArrow1Correct { get => arrow1.color == correctColor; }
@@ -56,7 +57,7 @@ public class ArrowButtonMinigame : MonoBehaviour
 
     private void HandleInput(Sprite input)
     {
-        SpriteRenderer arrowRenderer = GetNextArrow();
+        Image arrowRenderer = GetNextArrow();
         if (arrowRenderer == null)
         {
             return; // 4개의 화살표를 맞추는 상태가 아님...
@@ -76,12 +77,12 @@ public class ArrowButtonMinigame : MonoBehaviour
         nextArrowIndex++;
         if (nextArrowIndex >= 4)
         {
-            OnComplete.Invoke(IsAllCorrect);
+            OnComplete.Invoke();
             PlayHideAnimation();
         }
     }
 
-    private SpriteRenderer GetNextArrow()
+    private Image GetNextArrow()
     {
         if (nextArrowIndex == 0)
         {
