@@ -43,6 +43,7 @@ public class GameoverController : MonoBehaviour
         goodEndingUI.localScale = Vector3.zero; // 처음에는 크기를 0으로 설정
         goodEndingUI.anchoredPosition = Vector2.zero; // 화면 중앙으로 이동
         goodEndingUI.DOScale(1f, 1f).SetEase(Ease.OutBounce);
+        goodEndingUI.GetComponent<EndingUIController>().SyncSpritesToPlayerGod();
     }
 
     public void ShowSoSoEnding()

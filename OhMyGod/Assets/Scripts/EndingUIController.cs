@@ -11,7 +11,7 @@ public class EndingUIController : MonoBehaviour
     [SerializeField] private Image[] playerImages; // GoodEndingUI의 Player 이미지들
     [SerializeField] private PlayerController playerController; // PlayerController 참조
 
-    private void Start()
+    private void Startdddd()
     {
         // RankingUI를 복제
         GameObject rankingUICopy = Instantiate(rankingUI);
@@ -26,6 +26,11 @@ public class EndingUIController : MonoBehaviour
         rankingUICopyRect.sizeDelta = borderRect.sizeDelta;
         rankingUICopyRect.localScale = borderRect.localScale;
 
+        SyncSpritesToPlayerGod();
+    }
+
+    public void SyncSpritesToPlayerGod()
+    {
         // 플레이어가 선택한 신에 따라 God과 Player 이미지 설정
         if (playerController != null)
         {
