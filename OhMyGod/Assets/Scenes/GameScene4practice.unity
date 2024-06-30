@@ -2398,6 +2398,7 @@ MonoBehaviour:
   - {fileID: 233277048}
   - {fileID: 1111487733}
   rankingSystem: {fileID: 1317551395}
+  timeoutController: {fileID: 0}
   worshiperPrefab: {fileID: 6750142466624934222, guid: d7ed5df1e17884847a2b84415e2c82ad, type: 3}
   neutralWorshiperGroupPrefab: {fileID: 3725450398700584096, guid: 692722a6dfce88848a8a1be5df6f9ec0, type: 3}
   mapCollider: {fileID: 434241860}
@@ -2942,6 +2943,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 762144fa25fda4a40ac7d58e85214077, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameoverSound: {fileID: 0}
   badEndingUI: {fileID: 940060369}
   goodEndingUI: {fileID: 2060550734}
   soSoEndingUI: {fileID: 0}
@@ -3332,16 +3334,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curtain: {fileID: 1917052354}
-  darkBackground: {fileID: 2010881137}
+  skyBackground: {fileID: 0}
   battleIntroText: {fileID: 900962337}
-  leftBattleUI: {fileID: 371933395}
+  upperBattleUI: {fileID: 0}
   leftGodImage: {fileID: 805229162}
   leftWorshipGauge: {fileID: 560148304}
-  rightBattleUI: {fileID: 1411150243}
+  lowerBattleUI: {fileID: 0}
   rightGodImage: {fileID: 1333282528}
   rightWorshipGauge: {fileID: 1549923247}
   gameoverController: {fileID: 859102130}
   rankingSystem: {fileID: 1317551395}
+  arrowButtonMinigame: {fileID: 0}
+  battleBeginSound: {fileID: 0}
+  buffLength: 0.4
+  minMinigameDelay: 0.5
+  maxMinigameDelay: 1
+  playerTeamGuageSpeedup: 10
+  enemyTeamGuageSpeedup: 2
 --- !u!114 &909876655 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1744912720724200697, guid: 130fd3ae36aac6448b1ed21652b8e0ae, type: 3}
@@ -5101,6 +5110,7 @@ GameObject:
   - component: {fileID: 1505101390}
   - component: {fileID: 1505101391}
   - component: {fileID: 1517607734}
+  - component: {fileID: 1517607735}
   m_Layer: 0
   m_Name: topBounds
   m_TagString: Untagged
@@ -5116,6 +5126,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1517607731}
   m_CullTransparentMesh: 1
+--- !u!60 &1517607735
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1517607731}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0, y: 1}
+      - {x: -0.95105654, y: 0.30901697}
+      - {x: -0.5877852, y: -0.80901706}
+      - {x: 0.58778536, y: -0.80901694}
+      - {x: 0.9510565, y: 0.30901712}
+  m_UseDelaunayMesh: 0
 --- !u!1 &1533667916
 GameObject:
   m_ObjectHideFlags: 0
@@ -5820,7 +5880,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9547169, g: 0.8483433, b: 0.27920952, a: 1}
+  m_Color: {r: 0.25051606, g: 0.72104937, b: 0.85660374, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5829,11 +5889,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 22c2f2cf454fbd042a53af25d47d9066, type: 3}
-    m_FontSize: 70
+    m_FontSize: 100
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 3
-    m_MaxSize: 70
+    m_MinSize: 0
+    m_MaxSize: 100
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
@@ -6375,8 +6435,14 @@ MonoBehaviour:
   goodEndingUI: {fileID: 2060550733}
   soSoEndingUI: {fileID: 489518310}
   border: {fileID: 1075691528}
-  godImage: {fileID: 0}
-  playerImages: []
+  godImage: {fileID: 197388435}
+  playerImages:
+  - {fileID: 542531283}
+  - {fileID: 291796133}
+  - {fileID: 1534885328}
+  - {fileID: 825457368}
+  - {fileID: 278545365}
+  - {fileID: 656765263}
   playerController: {fileID: 0}
 --- !u!1 &2066054502
 GameObject:
