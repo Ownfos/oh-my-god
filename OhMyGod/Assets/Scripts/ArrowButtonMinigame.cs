@@ -10,6 +10,8 @@ public class ArrowButtonMinigame : MonoBehaviour
     [SerializeField] private Sprite arrowDown;
     [SerializeField] private Sprite arrowRight;
     [SerializeField] private Sprite arrowLeft;
+    [SerializeField] private AudioSource arrowSuccessSound;
+    [SerializeField] private AudioSource arrowFailSound;
 
     [Header("Visualization Options")]
     [SerializeField] private Color defaultColor;
@@ -79,6 +81,16 @@ public class ArrowButtonMinigame : MonoBehaviour
         {
             OnComplete.Invoke();
             PlayHideAnimation();
+
+
+            if (IsAllCorrect)
+            {
+                arrowSuccessSound.Play();
+            }
+            else
+            {
+                arrowFailSound.Play();
+            }
         }
     }
 

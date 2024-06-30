@@ -2975,6 +2975,11 @@ MonoBehaviour:
   rankingSystem: {fileID: 1317551395}
   arrowButtonMinigame: {fileID: 1326025228}
   battleBeginSound: {fileID: 2100288333}
+  buffLength: 0.4
+  minMinigameDelay: 0.36
+  maxMinigameDelay: 0.88
+  playerTeamGuageSpeedup: 6.79
+  enemyTeamGuageSpeedup: 2.15
 --- !u!114 &909876655 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1744912720724200697, guid: 130fd3ae36aac6448b1ed21652b8e0ae, type: 3}
