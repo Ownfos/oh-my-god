@@ -1449,7 +1449,7 @@ MonoBehaviour:
     m_FontSize: 105
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 1
     m_MaxSize: 165
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -1478,7 +1478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aadef516f705c2342ab113381b6e4bf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maximumPlaytimeInSecs: 10
+  maximumPlaytimeInSecs: 20
   remainingTimeText: {fileID: 391197613}
   OnTimeout:
     m_PersistentCalls:
@@ -1804,8 +1804,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rankingUI: {fileID: 1885501863}
-  goodEndingUI: {fileID: 489518310}
+  goodEndingUI: {fileID: 2060550733}
+  soSoEndingUI: {fileID: 489518310}
   border: {fileID: 198815699}
+  godImage: {fileID: 0}
+  playerImages: []
+  playerController: {fileID: 0}
 --- !u!114 &489518313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2940,6 +2944,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   badEndingUI: {fileID: 940060369}
   goodEndingUI: {fileID: 2060550734}
+  soSoEndingUI: {fileID: 0}
   rankingSystem: {fileID: 1317551395}
 --- !u!4 &859102131
 Transform:
@@ -6368,7 +6373,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rankingUI: {fileID: 1885501863}
   goodEndingUI: {fileID: 2060550733}
+  soSoEndingUI: {fileID: 489518310}
   border: {fileID: 1075691528}
+  godImage: {fileID: 0}
+  playerImages: []
+  playerController: {fileID: 0}
 --- !u!1 &2066054502
 GameObject:
   m_ObjectHideFlags: 0

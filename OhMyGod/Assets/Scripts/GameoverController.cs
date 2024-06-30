@@ -5,8 +5,8 @@ using UnityEngine.SceneManagement;
 public class GameoverController : MonoBehaviour
 {
     [SerializeField] private RectTransform badEndingUI;
-    [SerializeField] private RectTransform soSoEndingUI;
     [SerializeField] private RectTransform goodEndingUI;
+    [SerializeField] private RectTransform soSoEndingUI;
     [SerializeField] private RankingSystem rankingSystem;
 
     private void BlockPlayerInput()
@@ -18,20 +18,47 @@ public class GameoverController : MonoBehaviour
     public void ShowBadEnding()
     {
         BlockPlayerInput();
+
+        // BadEndingUI 활성화
+        badEndingUI.gameObject.SetActive(true);
+
+        // BadEndingUI 크기와 위치 설정
+        badEndingUI.localScale = Vector3.zero; // 처음에는 크기를 0으로 설정
+
+        // BadEndingUI를 화면 중앙으로 이동시키기 위해 앵커 설정
+        badEndingUI.anchoredPosition = Vector2.zero; // 화면 중앙으로 이동
+
+        // 애니메이션으로 크기를 키우기
         badEndingUI.DOScale(1f, 1f).SetEase(Ease.OutBounce);
+    }
+
+    public void ShowGoodEnding()
+    {
+        BlockPlayerInput();
+        goodEndingUI.gameObject.SetActive(true);
+        goodEndingUI.localScale = Vector3.zero; // 처음에는 크기를 0으로 설정
+        goodEndingUI.anchoredPosition = Vector2.zero; // 화면 중앙으로 이동
+        goodEndingUI.DOScale(1f, 1f).SetEase(Ease.OutBounce);
+    }
+
+    public void ShowSoSoEnding()
+    {
+        BlockPlayerInput();
+        soSoEndingUI.gameObject.SetActive(true);
+        soSoEndingUI.localScale = Vector3.zero; // 처음에는 크기를 0으로 설정
+        soSoEndingUI.anchoredPosition = Vector2.zero; // 화면 중앙으로 이동
+        soSoEndingUI.DOScale(1f, 1f).SetEase(Ease.OutBounce);
     }
 
     public void OnRestartButtonClick()
     {
-        // 페이딩하고 끝나면 DOKillAll
-        DOTween.KillAll();
-        SceneManager.LoadScene("GameScene");
+        // TODO: 페이딩하고 끝나면 DOKillAll
+        SceneManager.LoadScene("GodSelection");
     }
 
     public void OnMainMenuButtonClick()
     {
-        // 페이딩하고 끝나면 DOKillAll
-        DOTween.KillAll();
+        // TODO: 페이딩하고 끝나면 DOKillAll
         SceneManager.LoadScene("TitleScene");
     }
 
@@ -50,19 +77,6 @@ public class GameoverController : MonoBehaviour
         }
     }
 
-    // 제한시간은 가득 채웠지만 1등은 아닌 경우
-    public void ShowSoSoEnding()
-    {
-        BlockPlayerInput();
-        soSoEndingUI.DOScale(1f, 1f).SetEase(Ease.OutBounce);
-    }
-
-    // 1등으로 게임을 마무리한 경우
-    public void ShowGoodEnding()
-    {
-        BlockPlayerInput();
-        goodEndingUI.DOScale(1f, 1f).SetEase(Ease.OutBounce);
-    }
 
     // 남은 적 두 명의 신도 수가 0이 된 경우 호출
     public void CheckForEarlyVictory()

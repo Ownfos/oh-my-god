@@ -14,6 +14,7 @@ public class AutoBattleController : MonoBehaviour
 
     [SerializeField] private GameObject dummyEnemyLeft;
     [SerializeField] private GameObject dummyEnemyRight;
+    [SerializeField] private RankingSystem rankingSystem;
 
     private void Start()
     {
@@ -111,6 +112,7 @@ public class AutoBattleController : MonoBehaviour
         if (loser.ActiveWorshipers.Count <= 3)
         {
             Debug.Log($"Loser team {loser.name} has 3 or fewer worshipers. Destroying the parent object.");
+            rankingSystem.RemoveCompetitor(loser);
             Destroy(loser.gameObject);
         }
 

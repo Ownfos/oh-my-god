@@ -97,19 +97,6 @@ public class WorshipPropagationController : MonoBehaviour
 
     private void Update()
     {
-        // 신도 수가 0이면 패배 처리
-        if (ActiveWorshipers.Count == 0)
-        {
-            if (gameObject.CompareTag("Player"))
-            {
-                gameoverController.ShowBadEnding();
-            }
-            else
-            {
-                // 적 AI가 패배한 경우 적 오브젝트를 제거
-                Destroy(gameObject);
-            }
-        }
 
         // 중립 npc 포교 활동
         UpdatePropagationTime();
