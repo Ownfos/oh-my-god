@@ -215,10 +215,12 @@ public class BattleUIController : MonoBehaviour
                 {
                     gameoverController.ShowBadEnding();
                 }
-                // 적이었다면 그냥 삭제
+                // 적이었다면 그냥 삭제하고 랭킹 시스템에서 0으로 처리
                 else
                 {
                     rankingSystem.RemoveCompetitor(loseTeam);
+                    loseTeam.ActiveWorshipers.Clear(); // 신도 수를 0으로 처리
+                    Debug.Log($"ObjectDied: {loseTeam.name}");
                     Destroy(loseTeam.gameObject);
                 }
             }
@@ -246,6 +248,5 @@ public class BattleUIController : MonoBehaviour
             // 신도 수 및 경쟁자 현황에 변화가 생기었으니 랭킹 재계산
             rankingSystem.RecalculateRank();
         });
-
     }
 }

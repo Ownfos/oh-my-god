@@ -21,6 +21,10 @@ public class WorshipPropagationController : MonoBehaviour
     public Sprite WorshiperSprite;
     public GodType SelectedGod;
 
+    public List<WorshiperController> ActiveWorshipers = new List<WorshiperController>();
+
+    private GameoverController gameoverController;
+
     // 포교 범위 트리거가 달린 자식 게임 오브젝트.
     // 신도 수에 따라 반지름이 커진다.
     // 주인공인 경우 cinemachineCamera 레퍼런스를 추가로 등록해
@@ -32,15 +36,15 @@ public class WorshipPropagationController : MonoBehaviour
     {
         return propagationRange;
     }
+
     [SerializeField] private BattleUIController battleStartUIController;
     public EmojiController EmojiController;
 
-    public SpriteRenderer SpriteRenderer {get; private set;}
-    public List<WorshiperController> ActiveWorshipers {get; private set;}
+    public SpriteRenderer SpriteRenderer { get; private set; }
 
     // 배틀 중 사용하는 액티브 스킬은 포교로만 모을 수 있는 스킬 게이지를 소모함.
     // 최소 0, 최대 10, 한 명 섭외할 때마다 1씩 회복.
-    public int SkillGauge {get; set;} = 0;
+    public int SkillGauge { get; set; } = 0;
 
     private const int MAX_SKILL_GUAGE = 10;
 
@@ -56,7 +60,7 @@ public class WorshipPropagationController : MonoBehaviour
 
     // 배틀에서 진 팀은 잠시동안 다시 배틀을 할 수 없도록 보호함
     private float protectionPeriod = 0f;
-    public bool IsProtected {get => protectionPeriod > 0f; }
+    public bool IsProtected { get => protectionPeriod > 0f; }
 
     // 포교 범위에 들어온 모든 중립 npc 무리와
     // 무리에 속한 npc를 몇 명 동시에 마주쳤는지 세는 카운터.
@@ -79,8 +83,6 @@ public class WorshipPropagationController : MonoBehaviour
 
     private void Awake()
     {
-        ActiveWorshipers = new();
-
         SpriteRenderer = GetComponent<SpriteRenderer>();
         battleStartUIController = GetComponent<BattleUIController>();
 
@@ -89,8 +91,14 @@ public class WorshipPropagationController : MonoBehaviour
         rankingSystem = GameObject.FindGameObjectWithTag("RankingSystem").GetComponent<RankingSystem>();
     }
 
+    private void Start()
+    {
+        gameoverController = FindObjectOfType<GameoverController>();
+    }
+
     private void Update()
     {
+
         // 중립 npc 포교 활동
         UpdatePropagationTime();
 
@@ -196,14 +204,13 @@ public class WorshipPropagationController : MonoBehaviour
         // 중립 npc 집단(1인 이상)의 모든 인원이 포교 범위에서 나갔는지 체크.
         // 두 번째 조건은 내가 포교중이 아니라면 propagationTargetGroups에도
         // group이 존재하지 않으므로 없는 엔트리를 제거하는 버그를 막아준다.
-        // Note: 한 명은 나갔지만 다른 인원들이 범위 안에 있을 수 있으므로 npc 카운팅을 해줘야 함
         var group = other.gameObject.GetComponentInParent<NeutralWorshiperGroup>();
         if (group != null && group.currentPropagation == this)
         {
             // 포교 범위에서 벗어나면 말랑말랑 모션 끝, 정상 scale 복구
             other.transform.DOKill();
             other.transform.localScale = Vector3.one;
-            
+
             groupEncounterCount[group]--;
             if (groupEncounterCount[group] == 0)
             {
@@ -221,7 +228,7 @@ public class WorshipPropagationController : MonoBehaviour
     private void UpdatePropagationTime()
     {
         List<NeutralWorshiperGroup> groupsToDelete = new();
-        foreach(NeutralWorshiperGroup group in propagationTargetGroups)
+        foreach (NeutralWorshiperGroup group in propagationTargetGroups)
         {
             // 얼마나 오랜 시간 포교에 노출되었는가?
             group.PropagationDuration += Time.deltaTime;
@@ -298,7 +305,7 @@ public class WorshipPropagationController : MonoBehaviour
                 rankingSystem.RecalculateRank();
             }
         }
-        
+
         foreach (var group in groupsToDelete)
         {
             // 일단 null reference를 피하기 위해 포교 대상 리스트에서 삭제하고
@@ -322,6 +329,8 @@ public class WorshipPropagationController : MonoBehaviour
     // 내 신도 목록을 갱신해서 포교 범위나 카메라 뷰 줌아웃 등에 사용한다.
     public void AddWorshiper(WorshiperController worshiper)
     {
+        if (worshiper == null || ActiveWorshipers.Contains(worshiper)) return;
+
         ActiveWorshipers.Add(worshiper);
         worshiper.FollowTarget = gameObject;
 
