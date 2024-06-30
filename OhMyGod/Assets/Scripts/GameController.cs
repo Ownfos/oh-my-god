@@ -22,7 +22,7 @@ public class GameController : MonoBehaviour
 
     public GameObject worshiperPrefab; // 개별 NPC(Worshiper) 프리팹
     public GameObject neutralWorshiperGroupPrefab; // 집단(NeutralWorshiperGroup) 프리팹
-    private BoxCollider2D mapCollider; // 맵의 BoxCollider2D 컴포넌트
+    [SerializeField] private BoxCollider2D mapCollider; // 맵의 BoxCollider2D 컴포넌트
     public int areaSizeX = 18; // 18x12 직사각형 구역 크기 (가로)
     public int areaSizeY = 12; // 18x12 직사각형 구역 크기 (세로)
 
