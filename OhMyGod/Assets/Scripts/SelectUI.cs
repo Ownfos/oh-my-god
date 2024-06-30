@@ -38,6 +38,6 @@ public class GodSelection : MonoBehaviour
     void SelectGod(string godName)
     {
         SessionData.Instance.SelectedGod = godName;
-        SceneManager.LoadScene("GameScene4practice"); // 게임 씬으로 전환
+        SceneManager.LoadScene("GameScene"); // 게임 씬으로 전환
     }
 }

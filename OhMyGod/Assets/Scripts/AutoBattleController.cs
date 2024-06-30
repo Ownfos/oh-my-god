@@ -48,7 +48,11 @@ public class AutoBattleController : MonoBehaviour
             (other.gameObject == dummyEnemyRight.transform.Find("Circle").gameObject && other.CompareTag("PropagationRange")))
         {
             Debug.Log("Starting auto battle.");
-            StartCoroutine(ExecuteAutoBattle());
+            // 배틀 한 번으로 상대를 죽일 정도라면 적 사이에는 오토배틀 x
+            if (leftTeam.ActiveWorshipers.Count > 8 && rightTeam.ActiveWorshipers.Count > 8)
+            {
+                StartCoroutine(ExecuteAutoBattle());
+            }
         }
         else
         {
