@@ -1,6 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameoverController : MonoBehaviour
 {
@@ -9,6 +10,12 @@ public class GameoverController : MonoBehaviour
     [SerializeField] private RectTransform goodEndingUI;
     [SerializeField] private RectTransform soSoEndingUI;
     [SerializeField] private RankingSystem rankingSystem;
+    [SerializeField] private Text goodRank1;
+    [SerializeField] private Text goodRank2;
+    [SerializeField] private Text goodRank3; 
+    [SerializeField] private Text sosoRank1;
+    [SerializeField] private Text sosoRank2;
+    [SerializeField] private Text sosoRank3;
 
     private void BlockPlayerInput()
     {
@@ -44,6 +51,10 @@ public class GameoverController : MonoBehaviour
         goodEndingUI.anchoredPosition = Vector2.zero; // 화면 중앙으로 이동
         goodEndingUI.DOScale(1f, 1f).SetEase(Ease.OutBounce);
         goodEndingUI.GetComponent<EndingUIController>().SyncSpritesToPlayerGod();
+
+        goodRank1.text = "PLAYER";
+        goodRank2.text = rankingSystem.GetSecondRankName();
+        goodRank3.text = rankingSystem.GetThirdRankName();
     }
 
     public void ShowSoSoEnding()
@@ -53,6 +64,13 @@ public class GameoverController : MonoBehaviour
         soSoEndingUI.localScale = Vector3.zero; // 처음에는 크기를 0으로 설정
         soSoEndingUI.anchoredPosition = Vector2.zero; // 화면 중앙으로 이동
         soSoEndingUI.DOScale(1f, 1f).SetEase(Ease.OutBounce);
+        soSoEndingUI.GetComponent<EndingUIController>().SyncSpritesToPlayerGod();
+
+        
+
+        sosoRank1.text = rankingSystem.GetFirstRankName();
+        sosoRank2.text = rankingSystem.GetSecondRankName();
+        sosoRank3.text = rankingSystem.GetThirdRankName();
     }
 
     public void OnRestartButtonClick()

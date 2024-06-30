@@ -17,6 +17,40 @@ public class RankingSystem : MonoBehaviour
     // 열심히 종교를 퍼트리고 있는 플레이어 또는 AI의 목록
     private List<WorshipPropagationController> competitors = new();
 
+    public string GetFirstRankName()
+    {
+        if (competitors.Count >= 1)
+        {
+            return competitors[0].name;
+        }
+        else
+        {
+            return "";
+        }
+    }
+    public string GetSecondRankName()
+    {
+        if (competitors.Count >= 2)
+        {
+            return competitors[1].name;
+        }
+        else
+        {
+            return "";
+        }
+    }
+    public string GetThirdRankName()
+    {
+        if (competitors.Count >= 3)
+        {
+            return competitors[2].name;
+        }
+        else
+        {
+            return "";
+        }
+    }
+
     private void Start()
     {
         AddCompetitor(player);
