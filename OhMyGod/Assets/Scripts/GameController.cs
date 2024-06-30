@@ -22,11 +22,13 @@ public class GameController : MonoBehaviour
 
     public GameObject worshiperPrefab; // 개별 NPC(Worshiper) 프리팹
     public GameObject neutralWorshiperGroupPrefab; // 집단(NeutralWorshiperGroup) 프리팹
-    public BoxCollider2D mapCollider; // 맵의 BoxCollider2D 컴포넌트
+    private BoxCollider2D mapCollider; // 맵의 BoxCollider2D 컴포넌트
     public int areaSizeX = 18; // 18x12 직사각형 구역 크기 (가로)
     public int areaSizeY = 12; // 18x12 직사각형 구역 크기 (세로)
 
     private List<NeutralWorshiperGroup> worshiperGroups = new List<NeutralWorshiperGroup>();
+
+    public BoxCollider2D MapCollider { get => mapCollider; set => mapCollider = value; }
 
     void Start()
     {
@@ -42,7 +44,7 @@ public class GameController : MonoBehaviour
             playerController.SetCanMove(false); // 플레이어 이동 고정
         }
 
-        if (mapCollider == null || worshiperPrefab == null || neutralWorshiperGroupPrefab == null)
+        if (MapCollider == null || worshiperPrefab == null || neutralWorshiperGroupPrefab == null)
         {
             Debug.LogError("Map Collider 또는 Prefab이 설정되지 않았습니다.");
             return;
@@ -112,8 +114,8 @@ public class GameController : MonoBehaviour
 
     IEnumerator GenerateWorshiperGroups()
     {
-        Vector2 minBounds = mapCollider.bounds.min;
-        Vector2 maxBounds = mapCollider.bounds.max;
+        Vector2 minBounds = MapCollider.bounds.min;
+        Vector2 maxBounds = MapCollider.bounds.max;
         Debug.Log($"맵 경계: {minBounds} - {maxBounds}");
 
         int numAreasX = Mathf.FloorToInt((maxBounds.x - minBounds.x) / areaSizeX);
