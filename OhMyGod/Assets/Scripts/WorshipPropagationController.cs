@@ -330,7 +330,19 @@ public class WorshipPropagationController : MonoBehaviour
 
         // 포교 대상의 종교에 맞게 스프라이트 교체하기
         // TODO: 스프라이트가 아니라 애니메이터 교체가 필요할 수도 있음
-        worshiper.GetComponent<SpriteRenderer>().sprite = SpriteRenderer.sprite;
+        // worshiper.GetComponent<SpriteRenderer>().sprite = SpriteRenderer.sprite;
+        if (SelectedGod == GodType.Good)
+        {
+            worshiper.GetComponent<Animator>().SetTrigger("Good");
+        }
+        if (SelectedGod == GodType.Evil)
+        {
+            worshiper.GetComponent<Animator>().SetTrigger("Evil");
+        }
+        if (SelectedGod == GodType.Weird)
+        {
+            worshiper.GetComponent<Animator>().SetTrigger("Strange");
+        }
 
         worshiper.GetComponentInChildren<EmojiController>().PopupEmoji(EmojiType.Happy);
 

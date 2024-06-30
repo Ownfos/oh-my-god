@@ -21,18 +21,26 @@ public class EnemyRightSpawn : MonoBehaviour
     private void Start()
     {
         string godName = SessionData.Instance.SelectedGod;
+        Animator animator = GetComponent<Animator>();
+
 
         if (godName == "Strange")
         {
             SetEnemyAttributes(evilGodWorshiper, evilGodWorshiper, evilGod);
+            animator.SetTrigger("Evil");
+            propagationController.SelectedGod = GodType.Evil;
         }
         else if (godName == "Good")
         {
             SetEnemyAttributes(strangeGodWorshiper, strangeGodWorshiper, strangeGod);
+            animator.SetTrigger("Strange");
+            propagationController.SelectedGod = GodType.Weird;
         }
         else if (godName == "Evil")
         {
             SetEnemyAttributes(goodGodWorshiper, goodGodWorshiper, goodGod);
+            animator.SetTrigger("Good");
+            propagationController.SelectedGod = GodType.Good;
         }
     }
 

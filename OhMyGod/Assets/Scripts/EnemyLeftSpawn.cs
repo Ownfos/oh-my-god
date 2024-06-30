@@ -22,17 +22,25 @@ public class EnemyLeftSpawn : MonoBehaviour
     {
         string godName = SessionData.Instance.SelectedGod;
 
+        Animator animator = GetComponent<Animator>();
+
         if (godName == "Strange")
         {
             SetEnemyAttributes(goodGodWorshiper, goodGodWorshiper, goodGod);
+            animator.SetTrigger("Good");
+            propagationController.SelectedGod = GodType.Good;
         }
         else if (godName == "Good")
         {
             SetEnemyAttributes(evilGodWorshiper, evilGodWorshiper, evilGod);
+            animator.SetTrigger("Evil");
+            propagationController.SelectedGod = GodType.Evil;
         }
         else if (godName == "Evil")
         {
             SetEnemyAttributes(strangeGodWorshiper, strangeGodWorshiper, strangeGod);
+            animator.SetTrigger("Strange");
+            propagationController.SelectedGod = GodType.Weird;
         }
     }
 

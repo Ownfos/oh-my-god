@@ -92,6 +92,7 @@ public class PlayerController : MonoBehaviour
         moveDestination = rb.position;
 
         // 플레이어가 숭배하기로 한 신에 맞는 신도의 스프라이트를 사용
+        Animator animator = GetComponent<Animator>();
         WorshipPropagationController propagationController = GetComponent<WorshipPropagationController>();
         string godName = SessionData.Instance.SelectedGod;
         if (godName == "Strange")
@@ -100,6 +101,7 @@ public class PlayerController : MonoBehaviour
             propagationController.WorshiperSprite = weirdGodWorshiper;
             propagationController.GodSprite = weirdGod;
             propagationController.SelectedGod = GodType.Weird;
+            animator.SetTrigger("Strange");
         }
         else if (godName == "Good")
         {
@@ -107,6 +109,7 @@ public class PlayerController : MonoBehaviour
             propagationController.WorshiperSprite = goodGodWorshiper;
             propagationController.GodSprite = goodGod;
             propagationController.SelectedGod = GodType.Good;
+            animator.SetTrigger("Good");
         }
         else if (godName == "Evil")
         {
@@ -114,6 +117,7 @@ public class PlayerController : MonoBehaviour
             propagationController.WorshiperSprite = evilGodWorshiper;
             propagationController.GodSprite = evilGod;
             propagationController.SelectedGod = GodType.Evil;
+            animator.SetTrigger("Evil");
         }
     }
 
