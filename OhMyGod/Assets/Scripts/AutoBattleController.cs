@@ -6,71 +6,111 @@ public class AutoBattleController : MonoBehaviour
 {
     [SerializeField] private float battleDuration = 15f; // 전투 시간
     [SerializeField] private float postBattleCooldown = 5f; // 전투 종료 후 쿨다운 시간
-    [SerializeField] private LayerMask aiLayerMask; // AI 레이어 마스크
 
-    private bool isBattleActive = false;
+    public bool isAutoBattleActive = false; // 전투 상태를 나타내는 변수
     private float battleCooldownTimer = 0f;
     private WorshipPropagationController leftTeam;
     private WorshipPropagationController rightTeam;
 
+    [SerializeField] private GameObject dummyEnemyLeft;
+    [SerializeField] private GameObject dummyEnemyRight;
+
+    private void Start()
+    {
+        InitializeTeams();
+    }
+
+    private void InitializeTeams()
+    {
+        if (dummyEnemyLeft != null)
+        {
+            leftTeam = dummyEnemyLeft.GetComponent<WorshipPropagationController>();
+            if (leftTeam == null)
+            {
+                Debug.LogError("dummyEnemyLeft does not have a WorshipPropagationController component.");
+            }
+        }
+        else
+        {
+            Debug.LogError("dummyEnemyLeft is not assigned.");
+        }
+
+        if (dummyEnemyRight != null)
+        {
+            rightTeam = dummyEnemyRight.GetComponent<WorshipPropagationController>();
+            if (rightTeam == null)
+            {
+                Debug.LogError("dummyEnemyRight does not have a WorshipPropagationController component.");
+            }
+        }
+        else
+        {
+            Debug.LogError("dummyEnemyRight is not assigned.");
+        }
+
+        // Ensure the propagation ranges have triggers enabled and correct tags
+        var leftCollider = dummyEnemyLeft.transform.Find("Circle")?.GetComponent<Collider2D>();
+        var rightCollider = dummyEnemyRight.transform.Find("Circle")?.GetComponent<Collider2D>();
+
+        if (leftCollider != null)
+        {
+            leftCollider.isTrigger = true;
+            leftCollider.gameObject.tag = "PropagationRange";
+        }
+        if (rightCollider != null)
+        {
+            rightCollider.isTrigger = true;
+            rightCollider.gameObject.tag = "PropagationRange";
+        }
+    }
+
     private void Update()
     {
-        if (!isBattleActive)
+        if (!isAutoBattleActive && battleCooldownTimer > 0f)
         {
-            if (battleCooldownTimer > 0f)
-            {
-                battleCooldownTimer -= Time.deltaTime;
-            }
-            else
-            {
-                DetectAndStartBattle();
-            }
+            battleCooldownTimer -= Time.deltaTime;
         }
     }
 
-    private void DetectAndStartBattle()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (leftTeam == null || rightTeam == null) return;
+        if (isAutoBattleActive) return;
 
-        float detectionRadius = Mathf.Max(leftTeam.GetPropagationRange().transform.localScale.x, rightTeam.GetPropagationRange().transform.localScale.x) * 0.5f;
-        Collider2D[] detectedAIs = Physics2D.OverlapCircleAll(transform.position, detectionRadius, aiLayerMask);
-        if (detectedAIs.Length < 2) return;
-
-        DummyEnemyEvil evilAI = null;
-        DummyEnemyStrange strangeAI = null;
-
-        foreach (Collider2D collider in detectedAIs)
+        // Ensure leftTeam and rightTeam are not null
+        if (leftTeam == null || rightTeam == null)
         {
-            if (evilAI == null) evilAI = collider.GetComponent<DummyEnemyEvil>();
-            if (strangeAI == null) strangeAI = collider.GetComponent<DummyEnemyStrange>();
+            Debug.LogError("One of the teams is null during OnTriggerEnter2D.");
+            InitializeTeams(); // Attempt to reinitialize the teams
+            return;
+        }
 
-            if (evilAI != null && strangeAI != null)
-            {
-                StartCoroutine(ExecuteAutoBattle(evilAI, strangeAI));
-                break;
-            }
+        // Check if the collision is between the left and right propagation ranges
+        if ((other.gameObject == dummyEnemyLeft.transform.Find("Circle").gameObject && other.CompareTag("PropagationRange")) ||
+            (other.gameObject == dummyEnemyRight.transform.Find("Circle").gameObject && other.CompareTag("PropagationRange")))
+        {
+            Debug.Log("Starting auto battle.");
+            StartCoroutine(ExecuteAutoBattle());
+        }
+        else
+        {
+            Debug.Log("Collision detected but not between the expected propagation ranges.");
         }
     }
 
-    private IEnumerator ExecuteAutoBattle(DummyEnemyEvil evilAI, DummyEnemyStrange strangeAI)
+    private IEnumerator ExecuteAutoBattle()
     {
-        isBattleActive = true;
-        leftTeam = evilAI.GetComponent<WorshipPropagationController>();
-        rightTeam = strangeAI.GetComponent<WorshipPropagationController>();
+        Debug.Log("Executing auto battle.");
+        isAutoBattleActive = true;
 
-        // 포교 스크립트 비활성화 및 움직임 정지
+        // 포교 스크립트 비활성화
         leftTeam.enabled = false;
         rightTeam.enabled = false;
-        evilAI.StopMovement();
-        strangeAI.StopMovement();
-
-        // PlayerController 비활성화
-        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().enabled = false;
 
         yield return new WaitForSeconds(battleDuration);
 
         // 50% 확률로 승자 결정
         bool leftWins = Random.value > 0.5f;
+        Debug.Log(leftWins ? "Left team wins." : "Right team wins.");
 
         if (leftWins)
         {
@@ -83,22 +123,21 @@ public class AutoBattleController : MonoBehaviour
 
         yield return new WaitForSeconds(postBattleCooldown);
 
-        // 포교 스크립트 활성화 및 움직임 재개
+        // 포교 스크립트 활성화
         leftTeam.enabled = true;
         rightTeam.enabled = true;
-        evilAI.ResumeMovement();
-        strangeAI.ResumeMovement();
 
-        // PlayerController 활성화
-        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().enabled = true;
-
-        isBattleActive = false;
+        isAutoBattleActive = false;
         battleCooldownTimer = postBattleCooldown;
+        Debug.Log("Auto battle ended.");
     }
 
     private void ProcessBattleResult(WorshipPropagationController winner, WorshipPropagationController loser)
     {
+        Debug.Log($"Processing battle result. Winner: {winner.name}, Loser: {loser.name}");
         int numWorshipersToTransfer = loser.ActiveWorshipers.Count / 2;
+        Debug.Log($"Transferring {numWorshipersToTransfer} worshipers from loser to winner.");
+
         for (int i = 0; i < numWorshipersToTransfer; i++)
         {
             if (loser.ActiveWorshipers.Count > 0)
@@ -106,24 +145,12 @@ public class AutoBattleController : MonoBehaviour
                 var worshiper = loser.ActiveWorshipers[loser.ActiveWorshipers.Count - 1];
                 winner.AddWorshiper(worshiper);
                 loser.ActiveWorshipers.Remove(worshiper);
+                Debug.Log($"Transferred worshiper {worshiper.name}.");
             }
         }
 
         // 보호 기간 부여
         loser.GiveProtectionPeriod();
+        Debug.Log($"Protection period given to loser: {loser.name}");
     }
-}
-
-public class DummyEnemyEvil : MonoBehaviour
-{
-    // 이동 중지 및 재개 메서드 구현
-    public void StopMovement() { /* 이동 중지 로직 */ }
-    public void ResumeMovement() { /* 이동 재개 로직 */ }
-}
-
-public class DummyEnemyStrange : MonoBehaviour
-{
-    // 이동 중지 및 재개 메서드 구현
-    public void StopMovement() { /* 이동 중지 로직 */ }
-    public void ResumeMovement() { /* 이동 재개 로직 */ }
 }

@@ -1,7 +1,8 @@
-using DG.Tweening;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using DG.Tweening;
+using UnityEngine.InputSystem;
+
 
 public class PlayerController : MonoBehaviour
 {
@@ -38,6 +39,10 @@ public class PlayerController : MonoBehaviour
 
     // 이동 가능 여부를 제어하는 변수
     private bool canMove = false;
+
+    // WorshiperSprite와 GodSprite를 외부에서 접근할 수 있도록 프로퍼티 추가
+    public Sprite WorshiperSprite { get; private set; }
+    public Sprite GodSprite { get; private set; }
 
     private void Awake()
     {
@@ -100,6 +105,8 @@ public class PlayerController : MonoBehaviour
             propagationController.WorshiperSprite = weirdGodWorshiper;
             propagationController.GodSprite = weirdGod;
             propagationController.SelectedGod = GodType.Weird;
+            WorshiperSprite = weirdGodWorshiper;
+            GodSprite = weirdGod;
         }
         else if (godName == "Good")
         {
@@ -107,6 +114,8 @@ public class PlayerController : MonoBehaviour
             propagationController.WorshiperSprite = goodGodWorshiper;
             propagationController.GodSprite = goodGod;
             propagationController.SelectedGod = GodType.Good;
+            WorshiperSprite = goodGodWorshiper;
+            GodSprite = goodGod;
         }
         else if (godName == "Evil")
         {
@@ -114,6 +123,8 @@ public class PlayerController : MonoBehaviour
             propagationController.WorshiperSprite = evilGodWorshiper;
             propagationController.GodSprite = evilGod;
             propagationController.SelectedGod = GodType.Evil;
+            WorshiperSprite = evilGodWorshiper;
+            GodSprite = evilGod;
         }
     }
 

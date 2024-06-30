@@ -92,4 +92,18 @@ public class RankingSystem : MonoBehaviour
         }
         return -1; // 플레이어가 리스트에 있는 이상 여기에 도달할 일은 없음!
     }
+
+    //남은 적 두 명의 시녿 수가 0이 되었는지 확인
+     public bool IsEarlyVictory()
+    {
+        int count = 0;
+        foreach (var competitor in competitors)
+        {
+            if (competitor != player && competitor.ActiveWorshipers.Count == 0)
+            {
+                count++;
+            }
+        }
+        return count >= 2;
+    }
 }

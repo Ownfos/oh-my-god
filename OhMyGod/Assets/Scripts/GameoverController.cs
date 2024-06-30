@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 public class GameoverController : MonoBehaviour
 {
     [SerializeField] private RectTransform badEndingUI;
+    [SerializeField] private RectTransform soSoEndingUI;
     [SerializeField] private RectTransform goodEndingUI;
     [SerializeField] private RankingSystem rankingSystem;
 
@@ -17,18 +18,20 @@ public class GameoverController : MonoBehaviour
     public void ShowBadEnding()
     {
         BlockPlayerInput();
-        badEndingUI.DOMoveY(Screen.height / 2f, 1f).SetEase(Ease.OutBounce);
+        badEndingUI.DOScale(1f, 1f).SetEase(Ease.OutBounce);
     }
 
     public void OnRestartButtonClick()
     {
-        // TODO: 페이딩하고 끝나면 DOKillAll
-        SceneManager.LoadScene("GodSelection");
+        // 페이딩하고 끝나면 DOKillAll
+        DOTween.KillAll();
+        SceneManager.LoadScene("GameScene");
     }
 
     public void OnMainMenuButtonClick()
     {
-        // TODO: 페이딩하고 끝나면 DOKillAll
+        // 페이딩하고 끝나면 DOKillAll
+        DOTween.KillAll();
         SceneManager.LoadScene("TitleScene");
     }
 
@@ -50,7 +53,8 @@ public class GameoverController : MonoBehaviour
     // 제한시간은 가득 채웠지만 1등은 아닌 경우
     public void ShowSoSoEnding()
     {
-        // TODO: 
+        BlockPlayerInput();
+        soSoEndingUI.DOScale(1f, 1f).SetEase(Ease.OutBounce);
     }
 
     // 1등으로 게임을 마무리한 경우
@@ -58,5 +62,14 @@ public class GameoverController : MonoBehaviour
     {
         BlockPlayerInput();
         goodEndingUI.DOScale(1f, 1f).SetEase(Ease.OutBounce);
+    }
+
+    // 남은 적 두 명의 신도 수가 0이 된 경우 호출
+    public void CheckForEarlyVictory()
+    {
+        if (rankingSystem.IsEarlyVictory())
+        {
+            ShowGoodEnding();
+        }
     }
 }
