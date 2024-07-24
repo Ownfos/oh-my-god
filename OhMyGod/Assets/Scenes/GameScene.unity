@@ -4446,6 +4446,7 @@ MonoBehaviour:
   - {fileID: 1111487733}
   rankingSystem: {fileID: 1317551395}
   timeoutController: {fileID: 391197615}
+  playerPropagationRange: {fileID: 2100288335}
   worshiperPrefab: {fileID: 6750142466624934222, guid: d7ed5df1e17884847a2b84415e2c82ad, type: 3}
   neutralWorshiperGroupPrefab: {fileID: 3725450398700584096, guid: 692722a6dfce88848a8a1be5df6f9ec0, type: 3}
   mapCollider: {fileID: 434241860}
@@ -13925,6 +13926,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ff8affdfd790b14fbb2939b705e1dec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!58 &2100288335 stripped
+CircleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 4562429078905353396, guid: 130fd3ae36aac6448b1ed21652b8e0ae, type: 3}
+  m_PrefabInstance: {fileID: 2100288332}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2108974493
 GameObject:
   m_ObjectHideFlags: 0

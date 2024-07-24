@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private List<Transform> spawnPoints; // 유니티 에디터에서 지정할 수 있도록 설정
     [SerializeField] private RankingSystem rankingSystem;
     [SerializeField] private TimeoutController timeoutController;
+    [SerializeField] private Collider2D playerPropagationRange; // 카운트다운동안 비활성화하기 위한 레퍼런스
 
     private PlayerController playerController;
 
@@ -228,6 +229,9 @@ public class GameController : MonoBehaviour
 
     IEnumerator StartCountdown()
     {
+        // 카운트다운 동안은 포교 불가능하게 설정
+        playerPropagationRange.enabled = false;
+
         countdownText.gameObject.SetActive(true);
         Debug.Log("Countdown started.");
 
@@ -250,6 +254,9 @@ public class GameController : MonoBehaviour
 
         // 게임이 시작되었으니 제한시간도 줄어들기 시작해야 함
         timeoutController.StartTimer();
+
+        // 플레이어의 포교 범위 콜라이더를 활성화
+        playerPropagationRange.enabled = true;
     }
 
     void StartGame()
