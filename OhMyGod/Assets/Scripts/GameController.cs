@@ -149,7 +149,7 @@ public class GameController : MonoBehaviour
 
         // 랜덤한 수의 Worshiper 생성 (1-5)
         int worshiperCount = Random.Range(1, 6);
-        List<GameObject> groupMembers = GenerateWorshiperMembers(areaPosition, worshiperCount, groupObject);
+        List<GameObject> groupMembers = GenerateWorshiperMembers(worshiperCount, groupObject);
 
         group.InitializeGroup(groupMembers);
         worshiperGroups.Add(group);
@@ -162,30 +162,23 @@ public class GameController : MonoBehaviour
         return new Vector2(randomX, randomY);
     }
 
-    List<GameObject> GenerateWorshiperMembers(Vector2 areaPosition, int count, GameObject groupObject)
+    List<GameObject> GenerateWorshiperMembers(int count, GameObject groupObject)
     {
         List<GameObject> groupMembers = new List<GameObject>();
 
         for (int i = 0; i < count; i++)
         {
-            Vector2 spawnPosition = GetRandomPositionInArea(areaPosition);
+            var spawnPosition = new Vector2()
+            {
+                x = groupObject.transform.position.x + Random.Range(-1f, 1f),
+                y = groupObject.transform.position.y + Random.Range(-1f, 1f)
+            };
             Debug.Log($"NPC 스폰 위치: {spawnPosition}");
             GameObject worshiper = Instantiate(worshiperPrefab, spawnPosition, Quaternion.identity);
-            worshiper.transform.SetParent(groupObject.transform); // 그룹 오브젝트의 child로 설정
-
-            // Rigidbody2D의 중력 영향 제거
-            Rigidbody2D rb = worshiper.GetComponent<Rigidbody2D>();
-            if (rb != null)
-            {
-                rb.gravityScale = 0; // 중력 영향 제거
-            }
+            worshiper.transform.SetParent(groupObject.transform);
 
             // WorshiperController 스크립트 추가 및 FollowTarget 설정
             WorshiperController worshiperController = worshiper.GetComponent<WorshiperController>();
-            if (worshiperController == null)
-            {
-                worshiperController = worshiper.AddComponent<WorshiperController>();
-            }
             worshiperController.FollowTarget = groupObject; // FollowTarget 설정
 
             groupMembers.Add(worshiper);

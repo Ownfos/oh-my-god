@@ -68,11 +68,13 @@ public class ArrowButtonMinigame : MonoBehaviour
         if (arrowRenderer.sprite == input)
         {
             arrowRenderer.color = correctColor;
+            arrowRenderer.transform.localScale = Vector3.one;
             arrowRenderer.transform.DOShakeScale(1f, 0.3f);
         }
         else
         {
             arrowRenderer.color = wrongColor;
+            arrowRenderer.transform.localRotation = Quaternion.identity;
             arrowRenderer.transform.DOShakeRotation(1f, 30f);
         }
 
