@@ -11,11 +11,8 @@ public class GameController : MonoBehaviour
     public float numberScaleStart = 0.5f;
     public float numberScaleEnd = 1.5f;
 
-    public GameObject dummyEnemyLeft;
-    public GameObject dummyEnemyRight;
-
     [SerializeField] private List<Transform> spawnPoints; // 유니티 에디터에서 지정할 수 있도록 설정
-    [SerializeField] private RankingSystem rankingSystem; // 
+    [SerializeField] private RankingSystem rankingSystem;
     [SerializeField] private TimeoutController timeoutController;
 
     private PlayerController playerController;
@@ -30,11 +27,34 @@ public class GameController : MonoBehaviour
 
     public BoxCollider2D MapCollider { get => mapCollider; set => mapCollider = value; }
 
+    public GameObject jimmyPrefab;
+    public GameObject peterPrefab;
+    public GameObject mustardPrefab;
+    public GameObject malonePrefab;
+    public GameObject sandraPrefab;
+    public GameObject amyPrefab;
+    public GameObject juliaPrefab;
+    public GameObject elinaPrefab;
+
+    private List<GameObject> enemyPrefabs;
+
     void Start()
     {
         Debug.Log("Game Started");
 
         BGMController.Instance.SwitchToMainGameBGM();
+
+        enemyPrefabs = new List<GameObject>
+        {
+            jimmyPrefab,
+            peterPrefab,
+            mustardPrefab,
+            malonePrefab,
+            sandraPrefab,
+            amyPrefab,
+            juliaPrefab,
+            elinaPrefab
+        };
 
         MoveObjectsToRandomPositions();
 
@@ -55,7 +75,7 @@ public class GameController : MonoBehaviour
 
     void MoveObjectsToRandomPositions()
     {
-        if (spawnPoints.Count < 6)
+        if (spawnPoints.Count < 9)
         {
             Debug.LogError("스폰 포인트가 충분하지 않습니다.");
             return;
@@ -65,22 +85,20 @@ public class GameController : MonoBehaviour
         List<Transform> shuffledSpawnPoints = new List<Transform>(spawnPoints);
         Shuffle(shuffledSpawnPoints);
 
-         // DummyEnemyLeft 이동
-        dummyEnemyLeft.transform.position = shuffledSpawnPoints[0].position;
-        var leftController = dummyEnemyLeft.GetComponent<WorshipPropagationController>();
-        if (leftController != null)
+        // 8명의 적을 생성하여 스폰 포인트에 배치
+        for (int i = 0; i < enemyPrefabs.Count; i++)
         {
-            rankingSystem.AddCompetitor(leftController); // RankingSystem에 등록
-        }
+            GameObject enemy = Instantiate(enemyPrefabs[i], shuffledSpawnPoints[i].position, Quaternion.identity);
+            enemy.name = enemyPrefabs[i].name;
 
-        // DummyEnemyRight 이동
-        dummyEnemyRight.transform.position = shuffledSpawnPoints[1].position;
-        var rightController = dummyEnemyRight.GetComponent<WorshipPropagationController>();
-        if (rightController != null)
-        {
-            rankingSystem.AddCompetitor(rightController); // RankingSystem에 등록
+            var propagationController = enemy.GetComponent<WorshipPropagationController>();
+            if (propagationController != null)
+            {
+                rankingSystem.AddCompetitor(propagationController); // RankingSystem에 등록
+            }
         }
     }
+
     void Shuffle<T>(List<T> list)
     {
         int n = list.Count;
