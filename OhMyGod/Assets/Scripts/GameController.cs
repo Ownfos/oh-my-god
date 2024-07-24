@@ -11,7 +11,6 @@ public class GameController : MonoBehaviour
     public float numberScaleStart = 0.5f;
     public float numberScaleEnd = 1.5f;
 
-    [SerializeField] private List<Transform> spawnPoints; // 유니티 에디터에서 지정할 수 있도록 설정
     [SerializeField] private RankingSystem rankingSystem;
     [SerializeField] private TimeoutController timeoutController;
     [SerializeField] private Collider2D playerPropagationRange; // 카운트다운동안 비활성화하기 위한 레퍼런스
@@ -38,6 +37,9 @@ public class GameController : MonoBehaviour
     public GameObject elinaPrefab;
 
     private List<GameObject> enemyPrefabs;
+    private List<GameObject> spawnedEnemies = new List<GameObject>();
+
+    private float detectionRadius = 10f; 
 
     void Start()
     {
@@ -57,8 +59,6 @@ public class GameController : MonoBehaviour
             elinaPrefab
         };
 
-        MoveObjectsToRandomPositions();
-
         playerController = FindObjectOfType<PlayerController>();
         if (playerController != null)
         {
@@ -76,21 +76,15 @@ public class GameController : MonoBehaviour
 
     void MoveObjectsToRandomPositions()
     {
-        if (spawnPoints.Count < 9)
-        {
-            Debug.LogError("스폰 포인트가 충분하지 않습니다.");
-            return;
-        }
+        Vector2 minBounds = MapCollider.bounds.min;
+        Vector2 maxBounds = MapCollider.bounds.max;
 
-        // 스폰 포인트를 랜덤하게 섞기
-        List<Transform> shuffledSpawnPoints = new List<Transform>(spawnPoints);
-        Shuffle(shuffledSpawnPoints);
-
-        // 8명의 적을 생성하여 스폰 포인트에 배치
         for (int i = 0; i < enemyPrefabs.Count; i++)
         {
-            GameObject enemy = Instantiate(enemyPrefabs[i], shuffledSpawnPoints[i].position, Quaternion.identity);
+            Vector2 spawnPosition = GetValidSpawnPosition(minBounds, maxBounds);
+            GameObject enemy = Instantiate(enemyPrefabs[i], spawnPosition, Quaternion.identity);
             enemy.name = enemyPrefabs[i].name;
+            spawnedEnemies.Add(enemy);
 
             var propagationController = enemy.GetComponent<WorshipPropagationController>();
             if (propagationController != null)
@@ -98,6 +92,39 @@ public class GameController : MonoBehaviour
                 rankingSystem.AddCompetitor(propagationController); // RankingSystem에 등록
             }
         }
+    }
+
+    Vector2 GetValidSpawnPosition(Vector2 minBounds, Vector2 maxBounds)
+    {
+        Vector2 spawnPosition;
+        bool validPosition = false;
+
+        while (!validPosition)
+        {
+            spawnPosition = new Vector2(
+                Random.Range(minBounds.x, maxBounds.x),
+                Random.Range(minBounds.y, maxBounds.y)
+            );
+
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(spawnPosition, detectionRadius);
+            validPosition = true;
+
+            foreach (var collider in colliders)
+            {
+                if (collider.gameObject.CompareTag("Player") || spawnedEnemies.Contains(collider.gameObject))
+                {
+                    validPosition = false;
+                    break;
+                }
+            }
+
+            if (validPosition)
+            {
+                return spawnPosition;
+            }
+        }
+
+        return Vector2.zero;
     }
 
     void Shuffle<T>(List<T> list)
@@ -118,6 +145,8 @@ public class GameController : MonoBehaviour
         // A와 B를 동시 진행
         Coroutine npcGeneration = StartCoroutine(GenerateWorshiperGroups());
         Coroutine countdown = StartCoroutine(FadeAndCountdown());
+
+        MoveObjectsToRandomPositions(); // 적 스폰 로직을 여기서 호출
 
         yield return npcGeneration; // NPC 생성 완료 대기
         yield return countdown; // 카운트다운 완료 대기
