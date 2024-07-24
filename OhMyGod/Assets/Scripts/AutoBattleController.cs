@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class AutoBattleController : MonoBehaviour
 {
-    [SerializeField] private float battleDuration = 15f; // 전투 시간
-    [SerializeField] private float postBattleCooldown = 5f; // 전투 종료 후 쿨다운 시간
+    [SerializeField] private float battleDuration = 8f; // 전투 시간
+    [SerializeField] private float postBattleCooldown = 1f; // 전투 종료 후 쿨다운 시간
 
     public bool isAutoBattleActive = false; // 전투 상태를 나타내는 변수
     private float battleCooldownTimer = 0f;
@@ -15,6 +15,9 @@ public class AutoBattleController : MonoBehaviour
     [SerializeField] private GameObject dummyEnemyLeft;
     [SerializeField] private GameObject dummyEnemyRight;
     [SerializeField] private RankingSystem rankingSystem;
+
+    private string[] leftGroupNames = { "Jimmy", "Malone", "Peter", "Mustard" };
+    private string[] rightGroupNames = { "Sandra", "Amy", "Julia", "Elina" };
 
     private void Start()
     {
@@ -47,11 +50,17 @@ public class AutoBattleController : MonoBehaviour
         if ((other.gameObject == dummyEnemyLeft.transform.Find("Circle").gameObject && other.CompareTag("PropagationRange")) ||
             (other.gameObject == dummyEnemyRight.transform.Find("Circle").gameObject && other.CompareTag("PropagationRange")))
         {
-            Debug.Log("Starting auto battle.");
-            // 배틀 한 번으로 상대를 죽일 정도라면 적 사이에는 오토배틀 x
-            if (leftTeam.ActiveWorshipers.Count > 8 && rightTeam.ActiveWorshipers.Count > 8)
+            if (!IsSameGroup(dummyEnemyLeft, dummyEnemyRight))
             {
-                StartCoroutine(ExecuteAutoBattle());
+                Debug.Log("Starting auto battle.");
+                if (leftTeam.ActiveWorshipers.Count > 8 && rightTeam.ActiveWorshipers.Count > 8)
+                {
+                    StartCoroutine(ExecuteAutoBattle());
+                }
+            }
+            else
+            {
+                Debug.Log("Collision detected between same group members, no battle initiated.");
             }
         }
         else
@@ -162,5 +171,19 @@ public class AutoBattleController : MonoBehaviour
             collider.isTrigger = true;
             collider.gameObject.tag = "PropagationRange";
         }
+    }
+
+    private bool IsSameGroup(GameObject leftEnemy, GameObject rightEnemy)
+    {
+        string leftName = leftEnemy.name;
+        string rightName = rightEnemy.name;
+
+        bool leftIsInLeftGroup = System.Array.Exists(leftGroupNames, name => name == leftName);
+        bool rightIsInRightGroup = System.Array.Exists(rightGroupNames, name => name == rightName);
+
+        bool rightIsInLeftGroup = System.Array.Exists(leftGroupNames, name => name == rightName);
+        bool leftIsInRightGroup = System.Array.Exists(rightGroupNames, name => name == leftName);
+
+        return (leftIsInLeftGroup && rightIsInLeftGroup) || (leftIsInRightGroup && rightIsInRightGroup);
     }
 }
