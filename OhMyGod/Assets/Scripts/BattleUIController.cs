@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -235,11 +237,18 @@ public class BattleUIController : MonoBehaviour
                     removeIndexLowerbound = previousWorshiperCount * 2 / 3;
                 }
 
+                // 신도 소속 이동
+                List<WorshiperController> movingWorshipers = new();
                 for (int i = previousWorshiperCount - 1;  i > removeIndexLowerbound; --i)
                 {
+                    movingWorshipers.Add(loseTeam.ActiveWorshipers[i]);
                     winTeam.AddWorshiper(loseTeam.ActiveWorshipers[i]);
                     loseTeam.ActiveWorshipers.RemoveAt(i);
                 }
+
+                // 소속이 바뀐 신도들이 기존 집단에 갇혀서 나오지 못하는 문제를
+                // 잠시 충돌을 비활성화 하는 것으로 해결
+                PreventMovingWorshiperCollisionAsync(movingWorshipers, loseTeam.ActiveWorshipers).Forget();
             }
 
             // 진 팀에 10초간 보호기간 부여
@@ -248,5 +257,29 @@ public class BattleUIController : MonoBehaviour
             // 신도 수 및 경쟁자 현황에 변화가 생기었으니 랭킹 재계산
             rankingSystem.RecalculateRank();
         });
+    }
+
+    private async UniTask PreventMovingWorshiperCollisionAsync(List<WorshiperController> movingWorshipers, List<WorshiperController> prevGroupWorshipers)
+    {
+        // 충돌 비활성화
+        foreach (var prevGroupWorshiper in prevGroupWorshipers)
+        {
+            foreach (var movingWorshiper in movingWorshipers)
+            {
+                Physics2D.IgnoreCollision(prevGroupWorshiper.GetComponent<Collider2D>(), movingWorshiper.GetComponent<Collider2D>());
+            }
+        }
+
+        // 이동이 끝날 때까지 잠깐 대기
+        await UniTask.WaitForSeconds(2f);
+        
+        // 충돌 활성화
+        foreach (var prevGroupWorshiper in prevGroupWorshipers)
+        {
+            foreach (var movingWorshiper in movingWorshipers)
+            {
+                Physics2D.IgnoreCollision(prevGroupWorshiper.GetComponent<Collider2D>(), movingWorshiper.GetComponent<Collider2D>(), false);
+            }
+        }
     }
 }
