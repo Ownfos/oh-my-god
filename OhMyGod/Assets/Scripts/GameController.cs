@@ -176,14 +176,60 @@ public class GameController : MonoBehaviour
             {
                 Vector2 areaPosition = new Vector2(minBounds.x + areaX * areaSizeX, minBounds.y + areaY * areaSizeY);
                 Debug.Log($"구역 {areaY * numAreasX + areaX + 1} 시작 위치: {areaPosition}");
-                GenerateWorshipersInArea(areaPosition);
+                GenerateWorshipersInArea(areaPosition, 1, 5); // 각각 1 ~ 5명 집단
             }
         }
 
         yield break;
     }
 
-    void GenerateWorshipersInArea(Vector2 areaPosition)
+    public void NPCSpawnEvent()
+    {
+        // 총 8개의 구역을 선택해 각각 한 개의 NPC 집단(구성원 2~4명)을 생성함
+        List<Vector2> spawnPositions = ChooseRandomAreaPositions(8);
+        foreach (var pos in spawnPositions)
+        {
+            GenerateWorshipersInArea(pos, 2, 4);
+        }
+    }
+
+    private List<Vector2> ChooseRandomAreaPositions(int numArea)
+    {
+        List<Vector2> areaPositions = new();
+
+        Vector2 minBounds = MapCollider.bounds.min;
+        Vector2 maxBounds = MapCollider.bounds.max;
+        Debug.Log($"맵 경계: {minBounds} - {maxBounds}");
+
+        int numAreasX = Mathf.FloorToInt((maxBounds.x - minBounds.x) / areaSizeX);
+        int numAreasY = Mathf.FloorToInt((maxBounds.y - minBounds.y) / areaSizeY);
+
+        HashSet<int> areaIndices = new(); // 이미 선택한 영역 집합
+
+        for (int i = 0; i < numArea; ++i)
+        {
+            while (true)
+            {
+                // 영역 구간 중에서 한 칸을 랜덤하게 선택
+                int areaX = Random.Range(0, numAreasX);
+                int areaY = Random.Range(0, numAreasY);
+                int areaIndex = areaY * numAreasX + areaX;
+                if (areaIndices.Contains(areaIndex))
+                {
+                    continue; // 중복되는 영역이라 다시 선택
+                }
+
+                // 여기까지 왔으면 중복되지 않는 영역을 선택했다는 뜻
+                Vector2 areaPosition = new Vector2(minBounds.x + areaX * areaSizeX, minBounds.y + areaY * areaSizeY);
+                areaPositions.Add(areaPosition);
+                break;
+            }
+        }
+
+        return areaPositions;
+    } 
+
+    void GenerateWorshipersInArea(Vector2 areaPosition, int minWorshiper, int maxWorshiper)
     {
         // 한 영역 내에 NeutralWorshiperGroup 생성
         GameObject groupObject = Instantiate(neutralWorshiperGroupPrefab, GetRandomPositionInArea(areaPosition), Quaternion.identity);
@@ -196,8 +242,8 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        // 랜덤한 수의 Worshiper 생성 (1-5)
-        int worshiperCount = Random.Range(1, 6);
+        // 랜덤한 수의 Worshiper 생성 (Range 두 번째 인자는 exclusive라서 + 1 필요)
+        int worshiperCount = Random.Range(minWorshiper, maxWorshiper + 1);
         List<GameObject> groupMembers = GenerateWorshiperMembers(worshiperCount, groupObject);
 
         group.InitializeGroup(groupMembers);

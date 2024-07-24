@@ -2852,6 +2852,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OnNPCSpawnEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 618540254}
+        m_TargetAssemblyTypeName: GameController, Assembly-CSharp
+        m_MethodName: NPCSpawnEvent
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &399267625 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1716898379732909865, guid: 130fd3ae36aac6448b1ed21652b8e0ae, type: 3}
