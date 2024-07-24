@@ -195,7 +195,26 @@ public class WorshipPropagationController : MonoBehaviour
         {
             EmojiController.PopupEmoji(EmojiType.Surprise);
             enemyGroupController.EmojiController.PopupEmoji(EmojiType.Surprise);
-            battleStartUIController.PlayBattleStartUI(this, enemyGroupController);
+
+            // case 1) 상대 집단이 내 집단의 1/3 규모 미만인 경우 배틀 없이 즉시 전원 흡수
+            if (enemyGroupController.ActiveWorshipers.Count < ActiveWorshipers.Count / 3)
+            {
+                // 전원 포섭
+                foreach (var enemyWorshiper in enemyGroupController.ActiveWorshipers)
+                {
+                    AddWorshiper(enemyWorshiper);
+                }
+                enemyGroupController.ActiveWorshipers.Clear();
+
+                // 상대방 패배 처리 + 이모지
+                battleStartUIController.EndBattle(this, enemyGroupController);
+            }
+            // case 2) 상대 집단이 내 집단의 1/3 규모 이상인 경우 배틀로 승패 결정
+            else
+            {
+                battleStartUIController.PlayBattleStartUI(this, enemyGroupController);
+            }
+
         }
     }
 
