@@ -39,7 +39,7 @@ public class GameController : MonoBehaviour
     private List<GameObject> enemyPrefabs;
     private List<GameObject> spawnedEnemies = new List<GameObject>();
 
-    private float detectionRadius = 10f; 
+    private float detectionRadius = 30f; 
 
     void Start()
     {
@@ -82,11 +82,12 @@ public class GameController : MonoBehaviour
         for (int i = 0; i < enemyPrefabs.Count; i++)
         {
             Vector2 spawnPosition = GetValidSpawnPosition(minBounds, maxBounds);
-            GameObject enemy = Instantiate(enemyPrefabs[i], spawnPosition, Quaternion.identity);
-            enemy.name = enemyPrefabs[i].name;
-            spawnedEnemies.Add(enemy);
+            //GameObject enemy = Instantiate(enemyPrefabs[i], spawnPosition, Quaternion.identity);
+            // enemy.name = enemyPrefabs[i].name;
+            enemyPrefabs[i].transform.position = spawnPosition;
+            spawnedEnemies.Add(enemyPrefabs[i]);
 
-            var propagationController = enemy.GetComponent<WorshipPropagationController>();
+            var propagationController = enemyPrefabs[i].GetComponent<WorshipPropagationController>();
             if (propagationController != null)
             {
                 rankingSystem.AddCompetitor(propagationController); // RankingSystem에 등록
