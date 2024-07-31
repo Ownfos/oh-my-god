@@ -147,17 +147,45 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 636937503}
     m_Modifications:
+    - target: {fileID: 656875671725069503, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389182391337329866, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_Text
+      value: "\uC808\uB300\uC2E0\uC744 \uBAA9\uACA9\uD558\uACE0 \uC138\uC0C1\uC758
+        \uC9C4\uB9AC\uB97C \n\uAE68\uB2EC\uC740 \uAD6C\uC6D0\uC790\uC785\uB2C8\uB2E4.
+        \n\uADF8 \uC874\uC7AC\uB9CC\uC73C\uB85C \uB9CE\uC740 \uC2E0\uB3C4\uB4E4\uC744
+        \n\uB04C\uC5B4dh\uC9C0\uB9CC, \uC9C0\uB098\uCE58\uAC8C \uAC15\uD55C \uC2E0\uC559\uC2EC\uC740
+        \n\uC591\uB0A0\uC758 \uAC80\uC774 \uB420 \uC218\uB3C4 \uC788\uC2B5\uB2C8\uB2E4."
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389182391337329866, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 18
+      objectReference: {fileID: 0}
     - target: {fileID: 2270410025157886712, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Name
       value: goodImage
       objectReference: {fileID: 0}
+    - target: {fileID: 2329617204988992696, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 2876906178941315312, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3428094469190313950, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Text
       value: GOOD GOD
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600103708915897242, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_FontData.m_MinSize
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600103708915897242, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4823686427941276920, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Pivot.x
@@ -522,9 +550,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 636937503}
     m_Modifications:
+    - target: {fileID: 656875671725069503, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389182391337329866, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_Text
+      value: "\uC77C\uD655\uCC9C\uAE08\uC5D0 \uB300\uD55C \uC0AC\uB78C\uB4E4\uC758
+        \uC5F4\uB9DD\uC5D0 \n\uC751\uB2F5\uD558\uB4EF \uAC15\uB9BC\uD55C \uC874\uC7AC\uC785\uB2C8\uB2E4.
+        \uC138\uAC04\uC5D0 \n\uB110\uB9AC \uC54C\uB824\uC9C4 \uB108\uADF8\uB7EC\uC6B4
+        \uBBF8\uC18C \uB4A4\uC5D0 \uC228\uACA8\uC9C4 \n\uBCF8\uBAA8\uC2B5\uC774 \uC788\uB2E4\uACE0
+        \uC804\uC124\uB85C \uC804\uD574\uC9D1\uB2C8\uB2E4. "
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389182391337329866, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 2194558189896837372, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2329617204988992696, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 2876906178941315312, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2946700484389164787, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Name
@@ -536,7 +588,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4183958399859301991, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Text
-      value: "\u300E\uACF5\uD5C8\uC758 \uB3C4\uBC15\uC0AC \uD64D\uAE38\uB3D9\u300F"
+      value: "\u300E\uACF5\uD5C8 \uB3C4\uBC15\uC0AC \uB77C\uC904\u300F"
       objectReference: {fileID: 0}
     - target: {fileID: 4268400898922844221, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Sprite
@@ -547,8 +599,8 @@ PrefabInstance:
       value: "- \uB354\uBE14 \uC22D\uBC30 -\n\uC911\uB9BD NPC 1\uBA85 \uD3EC\uC12D
         \uC131\uACF5 \uC2DC\n30% \uD655\uB960\uB85C 1\uBA85\uC744 \uB354 \uD3EC\uC12D\uD569\uB2C8\uB2E4\n\n-
         \uAC00\uBCBC\uC6B4 \uBC1C\uAC78\uC74C -\n\uBC30\uD2C0\uC5D0\uC11C \uD328\uBC30\uD560
-        \uACBD\uC6B0 \uD604\uC7AC \uC9D1\uB2E8\uC758\n\uC808\uBC18\uC774 \uC544\uB2C8\uB77C
-        2/3\uB9CC\uD07C \uC720\uB2DB\uC744 \uBE7C\uC557\uAE40"
+        \uACBD\uC6B0 \uD604\uC7AC \uC9D1\uB2E8\uC758\n2/3\uB9CC\uD07C \uC720\uB2DB\uC744
+        \uBE7C\uC557\uAE40"
       objectReference: {fileID: 0}
     - target: {fileID: 4823686427941276920, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Pivot.x
@@ -947,9 +999,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 636937503}
     m_Modifications:
+    - target: {fileID: 656875671725069503, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389182391337329866, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_Text
+      value: "\uC601\uC0DD\uC758 \uBD88\uAF43\uC73C\uB85C \uD0C0\uC624\uB974\uB294
+        \uB208\uC744 \uAC00\uC9C4 \n\uC5B4\uB460\uC758 \uD30C\uC218\uAFBC\uC785\uB2C8\uB2E4.
+        \n\uD5D8\uC545\uD55C \uC678\uBAA8\uC640 \uB2EC\uB9AC \uB098\uC05C \uB9C8\uC74C\uC744
+        \uD488\uACE0 \n\uC788\uC9C4 \uC54A\uC544 \uBCF4\uC774\uB098, \uADF8\uC758
+        \uC22D\uBC30\uC790\uB4E4\uC740 \n\uB2E4\uB978 \uC0DD\uAC01\uC744 \uD558\uB294
+        \uB4EF \uBCF4\uC785\uB2C8\uB2E4."
+      objectReference: {fileID: 0}
+    - target: {fileID: 1389182391337329866, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 2329617204988992696, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 2876906178941315312, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2946700484389164787, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Name
@@ -957,7 +1030,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4183958399859301991, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Text
-      value: "\u300E\uC601\uC6D0\uC758 \uAC10\uC2DC\uC790 \uB098\uC988\uC6B8\u300F"
+      value: "\u300E\uC601\uC6D0 \uAC10\uC2DC\uC790 \uB098\uC988\uC6B8\u300F"
       objectReference: {fileID: 0}
     - target: {fileID: 4268400898922844221, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Sprite
@@ -1045,6 +1118,10 @@ PrefabInstance:
     - target: {fileID: 7591848654170521261, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Name
       value: godEvil
+      objectReference: {fileID: 0}
+    - target: {fileID: 7797515394289266334, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
+      propertyPath: m_Name
+      value: godEvilText
       objectReference: {fileID: 0}
     - target: {fileID: 8996312603467547445, guid: 42607e0e3671415469e2db5ec9abb5c4, type: 3}
       propertyPath: m_Color.b
