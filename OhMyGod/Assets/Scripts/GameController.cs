@@ -296,11 +296,15 @@ public class GameController : MonoBehaviour
             yield break;
         }
 
+        Time.timeScale = 0f; // 카운트다운 동안 모든 행동 정지
+
         Debug.Log("fadeController와 countdownText가 올바르게 설정되었습니다.");
         yield return StartCoroutine(fadeController.FadeIn());
 
         Debug.Log("Fade In completed. Starting countdown.");
         yield return StartCoroutine(StartCountdown());
+
+        Time.timeScale = 1f; // 카운트다운 동안 모든 행동 정지
     }
 
     IEnumerator StartCountdown()
@@ -317,13 +321,13 @@ public class GameController : MonoBehaviour
             countdownText.transform.localScale = new Vector3(numberScaleStart, numberScaleStart, numberScaleStart);
             countdownText.transform.DOScale(numberScaleEnd, 1f).SetEase(Ease.OutBounce);
             Debug.Log("Countdown: " + i);
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSecondsRealtime(1);
         }
 
         countdownText.text = "Start!";
         countdownText.transform.localScale = new Vector3(numberScaleStart, numberScaleStart, numberScaleStart);
-        countdownText.transform.DOScale(numberScaleEnd, 1f).SetEase(Ease.OutBounce);
-        yield return new WaitForSeconds(1);
+        countdownText.transform.DOScale(numberScaleEnd, 1f).SetEase(Ease.OutBounce).SetUpdate(isIndependentUpdate: true);
+        yield return new WaitForSecondsRealtime(1);
 
         countdownText.gameObject.SetActive(false);
         Debug.Log("Countdown completed. Starting game.");

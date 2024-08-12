@@ -4314,9 +4314,9 @@ RectTransform:
   - {fileID: 371933395}
   - {fileID: 1411150243}
   - {fileID: 1903853547}
-  - {fileID: 952040701}
   - {fileID: 391197612}
   - {fileID: 1885501864}
+  - {fileID: 952040701}
   - {fileID: 940060369}
   - {fileID: 1647360822}
   - {fileID: 1474147517}
@@ -6758,7 +6758,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &952040701
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9837,6 +9837,10 @@ PrefabInstance:
       value: OnRestartButtonClick
       objectReference: {fileID: 0}
     - target: {fileID: 1079065270265007483, guid: 2ffb98fb2d54eff4bb3f32a803e409ee, type: 3}
+      propertyPath: border
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1079065270265007483, guid: 2ffb98fb2d54eff4bb3f32a803e409ee, type: 3}
       propertyPath: godImage
       value: 
       objectReference: {fileID: 1474147518}
@@ -12173,11 +12177,11 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 22c2f2cf454fbd042a53af25d47d9066, type: 3}
-    m_FontSize: 105
+    m_FontSize: 253
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
-    m_MaxSize: 105
+    m_MaxSize: 300
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
