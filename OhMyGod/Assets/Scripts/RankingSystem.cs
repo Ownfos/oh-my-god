@@ -85,7 +85,7 @@ public class RankingSystem : MonoBehaviour
             {
                 if (i < competitors.Count)
                 {
-                    rankingTexts[i].text = $"{i+1}. {competitors[i].name}:{competitors[i].ActiveWorshipers.Count}";
+                    rankingTexts[i].text = $"{i+1}. {competitors[i].name} - {competitors[i].ActiveWorshipers.Count}";
                 }
                 else
                 {
@@ -98,18 +98,18 @@ public class RankingSystem : MonoBehaviour
         {
             for (int i = 0; i < 4; ++i)
             {
-                rankingTexts[i].text = $"{i+1}. {competitors[i].name}";
+                rankingTexts[i].text = $"{i+1}. {competitors[i].name} - {competitors[i].ActiveWorshipers.Count}";
             }
 
             // 플레이어가 만약 5위 이하라면 5위 표시는 플레이어의 랭킹으로 대체됨
             int playerRank = FindPlayerRank();
             if (playerRank >= 4)
             {
-                rankingTexts[4].text = $"{playerRank + 1}. Player";
+                rankingTexts[4].text = $"{playerRank + 1}. Player - {player.ActiveWorshipers.Count}";
             }
             else
             {
-                rankingTexts[4].text = $"5. {competitors[4].name}";
+                rankingTexts[4].text = $"5. {competitors[4].name} - {competitors[4].ActiveWorshipers.Count}";
             }
         }
 
