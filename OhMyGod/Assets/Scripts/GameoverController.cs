@@ -90,6 +90,13 @@ public class GameoverController : MonoBehaviour
     {
         BGMController.Instance.SwitchToGameClearBGM();
 
+        // 모든 적의 AI 비활성화
+        var enemies = FindObjectsOfType<RandomMovementAI2D>();
+        foreach (var enemy in enemies)
+        {
+            enemy.gameObject.SetActive(false);
+        }
+
         // 1위로 마무리
         if (rankingSystem.FindPlayerRank() == 0)
         {
