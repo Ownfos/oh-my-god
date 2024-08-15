@@ -54,7 +54,7 @@ public class WorshiperController : MonoBehaviour
         // 목표를 향해 가속 (거리가 5 이상일 때 최대 가속도)
         else
         {
-            float acceleration = Mathf.Min(5f, offsetToTarget.magnitude - 5f) / 5f * moveAcceleration;
+            float acceleration = Mathf.Clamp(offsetToTarget.magnitude / 5f, 0f, 1f) * moveAcceleration;
             rb.AddForce(offsetToTarget.normalized * acceleration, ForceMode2D.Force);
 
             // 최대 이동 속도를 넘어서지 않도록 clamping

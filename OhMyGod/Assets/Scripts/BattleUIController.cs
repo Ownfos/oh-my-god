@@ -44,6 +44,9 @@ public class BattleUIController : MonoBehaviour
         this.rightTeam = rightTeam;
         RandomizeMinigameCooltime();
 
+        rightTeam.GetComponent<RandomMovementAI2D>().enabled = false; // 적이 배틀 도중에 이동하는 것 방지
+        rightTeam.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+
         // 땡땡땡 하는 효과음
         battleBeginSound.Stop();
         battleBeginSound.Play();
@@ -188,6 +191,8 @@ public class BattleUIController : MonoBehaviour
     {
         BGMController.Instance.ResumeMainGameBGM();
 
+        rightTeam.GetComponent<RandomMovementAI2D>().enabled = true; // 배틀이 끝났으니 적이 다시 이동할 수 있도록 허용
+
         isMainBattleStarted = false;
         skyBackground.gameObject.SetActive(false);
         curtain.position = new Vector2(-Screen.width * 0.5f, Screen.height * 0.5f);
@@ -271,7 +276,7 @@ public class BattleUIController : MonoBehaviour
         }
 
         // 이동이 끝날 때까지 잠깐 대기
-        await UniTask.WaitForSeconds(2f);
+        await UniTask.WaitForSeconds(5f);
         
         // 충돌 활성화
         foreach (var prevGroupWorshiper in prevGroupWorshipers)
