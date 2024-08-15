@@ -168,8 +168,8 @@ public class WorshipPropagationController : MonoBehaviour
             // 이 집단 소속의 중립 npc를 한 명 더 만났다고 기록
             groupEncounterCount[group]++;
 
-            // 집단 별 첫 npc의 경우 효과음 재생
-            if (groupEncounterCount[group] == 1)
+            // 플레이어인 경우는 집단 별 첫 npc마다 효과음 재생
+            if (groupEncounterCount[group] == 1 && gameObject.CompareTag("Player"))
             {
                 group.PlayLureStartSoundEffect();
             }
