@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cinemachine;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 
@@ -207,7 +208,8 @@ public class WorshipPropagationController : MonoBehaviour
                 enemyGroupController.ActiveWorshipers.Clear();
 
                 // 상대방 패배 처리 + 이모지
-                battleStartUIController.EndBattle(this, enemyGroupController);
+                AbsorbOtherWorhiperGroup(enemyGroupController);
+                // battleStartUIController.EndBattle(this, enemyGroupController);
             }
             // case 2) 상대 집단이 내 집단의 1/3 규모 이상인 경우 배틀로 승패 결정
             else
@@ -387,9 +389,101 @@ public class WorshipPropagationController : MonoBehaviour
         }
     }
 
-    // 한 번 배틀에서 지면 10초간은 연속으로 공격할 수 없도록 보호함
-    public void GiveProtectionPeriod()
+    // 상대와의 배틀에서 승리했을 때 신도 흡수 및 상대방의 패배 처리를 담당하는 함수
+    public void AbsorbOtherWorhiperGroup(WorshipPropagationController otherGroup)
     {
-        protectionPeriod = 10f;
+        // 이모지 띄우기
+        otherGroup.EmojiController.PopupEmoji(EmojiType.Sad);
+        EmojiController.PopupEmoji(EmojiType.Celebrate);
+
+        // 이긴 팀에게 신도의 절반 이동.
+        // 만약 신도가 3명 이하라면 즉시 맵에서 퇴출
+        if (otherGroup.ActiveWorshipers.Count <= 3)
+        {
+            for (int i = 0;  i < otherGroup.ActiveWorshipers.Count; ++i)
+            {
+                otherGroup.ActiveWorshipers[i].transform.parent = null;
+                otherGroup.ActiveWorshipers[i].Die();
+            }
+
+            // 플레이어가 죽는 경우 게임오버 처리하기
+            if (otherGroup.gameObject.CompareTag("Player"))
+            {
+                gameoverController.ShowBadEnding();
+            }
+            // 적이었다면 그냥 삭제하고 랭킹 시스템에서 0으로 처리
+            else
+            {
+                rankingSystem.RemoveCompetitor(otherGroup);
+                otherGroup.ActiveWorshipers.Clear(); // 신도 수를 0으로 처리
+                Debug.Log($"ObjectDied: {otherGroup.name}");
+                Destroy(otherGroup.gameObject);
+            }
+        }
+        else
+        {
+            // 기본적으로는 배틀에서 패배하면 절반의 신도를 빼앗기지만
+            // 이상한 신을 믿는 경우 디버프로 인해 2/3을 빼앗김
+            int previousWorshiperCount = otherGroup.ActiveWorshipers.Count;
+            int removeIndexLowerbound = previousWorshiperCount / 2;
+            if (otherGroup.SelectedGod == GodType.Weird)
+            {
+                removeIndexLowerbound = previousWorshiperCount * 2 / 3;
+            }
+
+            // 신도 소속 이동
+            for (int i = previousWorshiperCount - 1;  i > removeIndexLowerbound; --i)
+            {
+                AddWorshiper(otherGroup.ActiveWorshipers[i]);
+                otherGroup.ActiveWorshipers.RemoveAt(i);
+            }
+
+            // 소속이 바뀐 신도들이 기존 집단에 갇혀서 나오지 못하는 문제를
+            // 잠시 충돌을 비활성화 하는 것으로 해결
+            PreventMovingWorshiperCollisionAsync(otherGroup).Forget();
+        }
+
+        // 진 팀에 10초간 보호기간 부여
+        otherGroup.GiveProtectionPeriod();
+
+        // 신도 수 및 경쟁자 현황에 변화가 생기었으니 랭킹 재계산
+        rankingSystem.RecalculateRank();
+    }
+
+    private async UniTask PreventMovingWorshiperCollisionAsync(WorshipPropagationController otherGroup)
+    {
+        // Debug.Log("이동하는 신도들의 충돌 비활성화");
+
+        SetGroupCollision(otherGroup, ignore: true);
+
+        // 이동이 끝날 때까지 잠깐 대기
+        await UniTask.WaitForSeconds(5f);
+
+        SetGroupCollision(otherGroup, ignore: false);
+    }
+
+    private void SetGroupCollision(WorshipPropagationController otherGroup, bool ignore)
+    {
+        var otherLeaderCollider = otherGroup.GetComponent<Collider2D>();
+        var myLeaderCollider = GetComponent<Collider2D>();
+
+        foreach (var otherGroupWorshiper in otherGroup.ActiveWorshipers)
+        {
+            var otherWorshiperCollider = otherGroupWorshiper.GetComponent<Collider2D>();
+            Physics2D.IgnoreCollision(otherWorshiperCollider, myLeaderCollider, ignore);
+
+            foreach (var myWorshiper in ActiveWorshipers)
+            {
+                var myWorshiperCollider = myWorshiper.GetComponent<Collider2D>();
+                Physics2D.IgnoreCollision(myWorshiperCollider, otherWorshiperCollider, ignore);
+                Physics2D.IgnoreCollision(myWorshiperCollider, otherLeaderCollider, ignore);
+            }
+        }
+    }
+
+    // 한 번 배틀에서 지면 10초간은 연속으로 공격할 수 없도록 보호함
+    public void GiveProtectionPeriod(float duration = 10f)
+    {
+        protectionPeriod = duration;
     }
 }

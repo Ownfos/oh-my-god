@@ -45,7 +45,6 @@ public class BattleUIController : MonoBehaviour
         RandomizeMinigameCooltime();
 
         rightTeam.GetComponent<RandomMovementAI2D>().enabled = false; // 적이 배틀 도중에 이동하는 것 방지
-        rightTeam.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
 
         // 땡땡땡 하는 효과음
         battleBeginSound.Stop();
@@ -149,10 +148,12 @@ public class BattleUIController : MonoBehaviour
 
             if (leftWorshipGauge.value >= 1f)
             {
+                rightTeam.GetComponent<RandomMovementAI2D>().enabled = true; // 배틀이 끝났으니 적이 다시 이동할 수 있도록 허용
                 EndBattle(leftTeam, rightTeam);
             }
             else if (rightWorshipGauge.value >= 1f)
             {
+                rightTeam.GetComponent<RandomMovementAI2D>().enabled = true;
                 EndBattle(rightTeam, leftTeam);
             }
         }
@@ -191,8 +192,6 @@ public class BattleUIController : MonoBehaviour
     {
         BGMController.Instance.ResumeMainGameBGM();
 
-        rightTeam.GetComponent<RandomMovementAI2D>().enabled = true; // 배틀이 끝났으니 적이 다시 이동할 수 있도록 허용
-
         // 이전 배틀의 미니게임 진행 상황이 다음 배틀로 넘어가지 않도록 초기화
         arrowButtonMinigame.StopMinigame();
 
@@ -203,91 +202,10 @@ public class BattleUIController : MonoBehaviour
         lowerBattleUI.DOMoveY(Screen.width * -0.5f, 1f).SetEase(Ease.OutSine).OnComplete(()=>{
             isBattleActive = false;
 
-            // 이모지 띄우기
-            loseTeam.EmojiController.PopupEmoji(EmojiType.Sad);
-            winTeam.EmojiController.PopupEmoji(EmojiType.Celebrate);
-
             // 플레이어 입력 허용하기
             GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().enabled = true;
 
-            // 이긴 팀에게 신도의 절반 이동.
-            // 만약 신도가 3명 이하라면 즉시 맵에서 퇴출
-            if (loseTeam.ActiveWorshipers.Count <= 3)
-            {
-                for (int i = 0;  i < loseTeam.ActiveWorshipers.Count; ++i)
-                {
-                    loseTeam.ActiveWorshipers[i].transform.parent = null;
-                    loseTeam.ActiveWorshipers[i].Die();
-                }
-
-                // 플레이어가 죽는 경우 게임오버 처리하기
-                if (loseTeam.gameObject.CompareTag("Player"))
-                {
-                    gameoverController.ShowBadEnding();
-                }
-                // 적이었다면 그냥 삭제하고 랭킹 시스템에서 0으로 처리
-                else
-                {
-                    rankingSystem.RemoveCompetitor(loseTeam);
-                    loseTeam.ActiveWorshipers.Clear(); // 신도 수를 0으로 처리
-                    Debug.Log($"ObjectDied: {loseTeam.name}");
-                    Destroy(loseTeam.gameObject);
-                }
-            }
-            else
-            {
-                // 기본적으로는 배틀에서 패배하면 절반의 신도를 빼앗기지만
-                // 이상한 신을 믿는 경우 디버프로 인해 2/3을 빼앗김
-                int previousWorshiperCount = loseTeam.ActiveWorshipers.Count;
-                int removeIndexLowerbound = previousWorshiperCount / 2;
-                if (loseTeam.SelectedGod == GodType.Weird)
-                {
-                    removeIndexLowerbound = previousWorshiperCount * 2 / 3;
-                }
-
-                // 신도 소속 이동
-                List<WorshiperController> movingWorshipers = new();
-                for (int i = previousWorshiperCount - 1;  i > removeIndexLowerbound; --i)
-                {
-                    movingWorshipers.Add(loseTeam.ActiveWorshipers[i]);
-                    winTeam.AddWorshiper(loseTeam.ActiveWorshipers[i]);
-                    loseTeam.ActiveWorshipers.RemoveAt(i);
-                }
-
-                // 소속이 바뀐 신도들이 기존 집단에 갇혀서 나오지 못하는 문제를
-                // 잠시 충돌을 비활성화 하는 것으로 해결
-                PreventMovingWorshiperCollisionAsync(movingWorshipers, loseTeam.ActiveWorshipers).Forget();
-            }
-
-            // 진 팀에 10초간 보호기간 부여
-            loseTeam.GiveProtectionPeriod();
-
-            // 신도 수 및 경쟁자 현황에 변화가 생기었으니 랭킹 재계산
-            rankingSystem.RecalculateRank();
+            winTeam.AbsorbOtherWorhiperGroup(loseTeam);
         });
-    }
-
-    private async UniTask PreventMovingWorshiperCollisionAsync(List<WorshiperController> movingWorshipers, List<WorshiperController> prevGroupWorshipers)
-    {
-        // 충돌 비활성화
-        foreach (var prevGroupWorshiper in prevGroupWorshipers)
-        {
-            foreach (var movingWorshiper in movingWorshipers)
-            {
-                Physics2D.IgnoreCollision(prevGroupWorshiper.GetComponent<Collider2D>(), movingWorshiper.GetComponent<Collider2D>());
-            }
-        }
-
-        // 이동이 끝날 때까지 잠깐 대기
-        await UniTask.WaitForSeconds(5f);
-        
-        // 충돌 활성화
-        foreach (var prevGroupWorshiper in prevGroupWorshipers)
-        {
-            foreach (var movingWorshiper in movingWorshipers)
-            {
-                Physics2D.IgnoreCollision(prevGroupWorshiper.GetComponent<Collider2D>(), movingWorshiper.GetComponent<Collider2D>(), false);
-            }
-        }
     }
 }

@@ -24,6 +24,11 @@ public class WorshiperController : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    private void OnDestroy()
+    {
+        transform.DOKill();
+    }
+
     private void FixedUpdate()
     {
         if (FollowTarget != null)

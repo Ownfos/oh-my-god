@@ -40,21 +40,21 @@ public class AutoBattleController : MonoBehaviour
     {
         if (isAutoBattleActive) return;
 
-        if (leftTeam == null || rightTeam == null)
-        {
-            Debug.LogError("One of the teams is null during OnTriggerEnter2D.");
-            return;
-        }
-
         // Check if the collision is between the left and right propagation ranges
+        /*
         if ((other.gameObject == dummyEnemyLeft.transform.Find("Circle").gameObject && other.CompareTag("PropagationRange")) ||
             (other.gameObject == dummyEnemyRight.transform.Find("Circle").gameObject && other.CompareTag("PropagationRange")))
+        */
+        if (other.transform.parent != null && other.transform.parent.TryGetComponent(out WorshipPropagationController otherGroup))
         {
-            if (!IsSameGroup(dummyEnemyLeft, dummyEnemyRight))
+            if (!IsSameGroup(dummyEnemyLeft, dummyEnemyRight) && !other.CompareTag("Player"))
             {
-                Debug.Log("Starting auto battle.");
+                leftTeam = GetComponent<WorshipPropagationController>();
+                rightTeam = otherGroup;
+
                 if (leftTeam.ActiveWorshipers.Count > 8 && rightTeam.ActiveWorshipers.Count > 8)
                 {
+                    Debug.Log($"Starting auto battle between {leftTeam.name} and {rightTeam.name}");
                     StartCoroutine(ExecuteAutoBattle());
                 }
             }
@@ -71,8 +71,16 @@ public class AutoBattleController : MonoBehaviour
 
     private IEnumerator ExecuteAutoBattle()
     {
-        Debug.Log("Executing auto battle.");
         isAutoBattleActive = true;
+        rightTeam.GetComponent<AutoBattleController>().isAutoBattleActive = true;
+
+        // 이동 비활성화
+        leftTeam.GetComponent<RandomMovementAI2D>().enabled = false;
+        rightTeam.GetComponent<RandomMovementAI2D>().enabled = false;
+
+        // 오토 배틀 도중에 플레이어와 전투를 시작하지 않도록 보호기간 설정
+        leftTeam.GiveProtectionPeriod(battleDuration);
+        rightTeam.GiveProtectionPeriod(battleDuration);
 
         // 포교 스크립트 비활성화
         leftTeam.enabled = false;
@@ -82,7 +90,7 @@ public class AutoBattleController : MonoBehaviour
 
         // 50% 확률로 승자 결정
         bool leftWins = Random.value > 0.5f;
-        Debug.Log(leftWins ? "Left team wins." : "Right team wins.");
+        // Debug.Log(leftWins ? "Left team wins." : "Right team wins.");
 
         if (leftWins)
         {
@@ -98,15 +106,23 @@ public class AutoBattleController : MonoBehaviour
         // 포교 스크립트 활성화
         leftTeam.enabled = true;
         rightTeam.enabled = true;
+        
+        // 이동 활성화
+        leftTeam.GetComponent<RandomMovementAI2D>().enabled = true;
+        rightTeam.GetComponent<RandomMovementAI2D>().enabled = true;
 
         isAutoBattleActive = false;
+        rightTeam.GetComponent<AutoBattleController>().isAutoBattleActive = false;
         battleCooldownTimer = postBattleCooldown;
-        Debug.Log("Auto battle ended.");
+        // Debug.Log("Auto battle ended.");
     }
 
     private void ProcessBattleResult(WorshipPropagationController winner, WorshipPropagationController loser)
     {
         Debug.Log($"Processing battle result. Winner: {winner.name}, Loser: {loser.name}");
+
+        winner.AbsorbOtherWorhiperGroup(loser);
+        /*
         int numWorshipersToTransfer = loser.ActiveWorshipers.Count / 2;
         Debug.Log($"Transferring {numWorshipersToTransfer} worshipers from loser to winner.");
 
@@ -132,6 +148,7 @@ public class AutoBattleController : MonoBehaviour
         // 보호 기간 부여
         loser.GiveProtectionPeriod();
         Debug.Log($"Protection period given to loser: {loser.name}");
+        */
     }
 
     private void InitializeTeams()

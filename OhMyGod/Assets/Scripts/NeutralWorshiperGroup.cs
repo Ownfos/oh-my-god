@@ -44,6 +44,11 @@ public class NeutralWorshiperGroup : MonoBehaviour
         lureStartSound = GetComponent<AudioSource>();
     }
 
+    private void OnDestroy()
+    {
+        followTarget.transform.DOKill();
+    }
+
     public void PlayLureStartSoundEffect()
     {
         lureStartSound.Stop();

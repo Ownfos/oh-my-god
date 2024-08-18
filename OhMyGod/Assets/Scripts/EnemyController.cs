@@ -36,6 +36,16 @@ public class RandomMovementAI2D : MonoBehaviour
         Move();
     }
 
+    void OnDisable()
+    {
+        rb2d.velocity = Vector2.zero;
+    }
+
+    void OnDestroy()
+    {
+        StopAllCoroutines();    
+    }
+
     IEnumerator BehaviorRoutine()
     {
         while (true)
