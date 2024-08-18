@@ -193,6 +193,9 @@ public class BattleUIController : MonoBehaviour
 
         rightTeam.GetComponent<RandomMovementAI2D>().enabled = true; // 배틀이 끝났으니 적이 다시 이동할 수 있도록 허용
 
+        // 이전 배틀의 미니게임 진행 상황이 다음 배틀로 넘어가지 않도록 초기화
+        arrowButtonMinigame.StopMinigame();
+
         isMainBattleStarted = false;
         skyBackground.gameObject.SetActive(false);
         curtain.position = new Vector2(-Screen.width * 0.5f, Screen.height * 0.5f);

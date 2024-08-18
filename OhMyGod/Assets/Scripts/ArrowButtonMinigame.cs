@@ -132,6 +132,12 @@ public class ArrowButtonMinigame : MonoBehaviour
         PlayPopupAnimation();
     }
 
+    public void StopMinigame()
+    {
+        PlayHideAnimation();
+        nextArrowIndex = 5;
+    }
+
     private void RandomizeArrows()
     {
         arrow1.sprite = SelectRandomSprite();
